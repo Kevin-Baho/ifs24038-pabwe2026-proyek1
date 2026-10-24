@@ -8,29 +8,30 @@ Proyek ini dibangun sebagai tugas praktikum Pemrograman Aplikasi Berbasis Web En
 
 ## Arsitektur & Teknologi
 
-Repo ini merupakan monorepo yang terdiri dari backend dan frontend:
+Repositori ini mengintegrasikan aplikasi Frontend React langsung di root (kompatibel dengan pipeline Delcom CI/CD) dan server Backend Express di dalam subfolder:
+
+- **Frontend (Root Direktori `./`)**:
+  - React 19 + Vite
+  - Tailwind CSS v4
+  - Redux Toolkit (state management terpusat dengan aksi & reducer terstruktur)
+  - React Router DOM v7 (manajemen rute & proteksi halaman)
+  - SweetAlert2 (dialog konfirmasi & umpan balik aksi interaktif)
+  - Vitest + Testing Library React (pengujian otomatis unit & integrasi dengan target cakupan tinggi)
+  - Berjalan di port default `3000`
 
 - **Backend (`dormduty-backend/`)**:
   - Node.js (ESM) + Express.js
-  - SQLite (`better-sqlite3`)
-  - Autentikasi JWT & enkripsi kata sandi menggunakan `bcryptjs`
-  - Upload file multipart dengan `multer`
+  - Basis data SQLite (`better-sqlite3`)
+  - Autentikasi JWT (JSON Web Token) & enkripsi kata sandi menggunakan `bcryptjs`
+  - Penanganan berkas bukti kebersihan (multipart form-data) dengan `multer`
   - Berjalan di port `5000` (Base URL: `http://localhost:5000/api/v1`)
-
-- **Frontend (`dormduty-frontend/`)**:
-  - React 19 + Vite
-  - Tailwind CSS v4
-  - Redux Toolkit (state management dengan aksi & reducer konsisten)
-  - React Router DOM v7
-  - SweetAlert2 (notifikasi toast & dialog konfirmasi interaktif)
-  - Vitest + Testing Library React (pengujian unit & integrasi dengan cakupan tinggi > 95%)
-  - Berjalan di port `3000` (atau port default Vite)
 
 ---
 
 ## Prasyarat Sistem
 
 - **Node.js**: Versi 20+ (direkomendasikan Node.js 24)
+- **Bun**: Versi 1.1+ (digunakan pada pipeline CI/CD)
 - **NPM**: Versi 10+
 - **Sistem Operasi**: Windows (PowerShell / Command Prompt), macOS, atau Linux
 
@@ -38,89 +39,106 @@ Repo ini merupakan monorepo yang terdiri dari backend dan frontend:
 
 ## Panduan Instalasi & Menjalankan Aplikasi
 
-### 1. Backend
+Aplikasi membutuhkan dua terminal yang berjalan bersamaan (satu untuk backend dan satu untuk frontend).
 
-Buka terminal dan arahkan ke folder `dormduty-backend`:
+### 1. Menjalankan Backend
 
-```bash
+Buka terminal pertama dan arahkan ke folder `dormduty-backend`:
+
+
 cd dormduty-backend
 
-# 1. Pasang dependensi
+# 1. Pasang dependensi backend
 npm install
 
 # 2. Inisialisasi basis data dan data awal (seed)
 npm run seed
 
-# 3. Jalankan server pengembangan (mode watch)
+# 3. Jalankan server backend dalam mode pengembangan
 npm run dev
-```
 
-Server backend akan berjalan di `http://localhost:5000`.
+Server backend akan aktif di http://localhost:5000 (Endpoint cek status: http://localhost:5000/api/v1/health).
+2. Menjalankan Frontend
 
-### 2. Frontend
+Buka terminal kedua pada root direktori repositori (tidak perlu masuk ke subfolder):
+code Bash
 
-Buka terminal baru dan arahkan ke folder `dormduty-frontend`:
-
-```bash
-cd dormduty-frontend
-
-# 1. Pasang dependensi
+# 1. Pasang dependensi frontend
 npm install
+# atau menggunakan bun:
+# bun install
 
-# 2. Jalankan server pengembangan frontend
+# 2. Jalankan server frontend
 npm run dev
-```
 
-Aplikasi frontend dapat diakses melalui browser pada alamat yang ditampilkan di terminal (biasanya `http://localhost:3000` atau `http://localhost:5173`).
+Aplikasi frontend dapat diakses melalui browser pada alamat http://localhost:3000.
+Akun Pengguna Data Awal (Seed)
 
----
+Basis data dilengkapi dengan akun seed yang mencakup peran administratif dan operasional:
+Peran	Nama	Email / Identifier	NIM	Kata Sandi	Lantai	Kamar
+Admin	Admin Asrama	admin@dormduty.test	000001	admin123	1	Kamar 101
+Coordinator	Koordinator Lantai 2	koordinator@dormduty.test	000002	koor123	2	Kamar 201
 
-## Akun Pengguna Data Awal (Seed)
+    Catatan: Masuk ke aplikasi (login) dapat menggunakan Email maupun NIM.
 
-Basis data dilengkapi dengan akun seed yang mencakup seluruh peran pengguna:
+Menjalankan Pengujian Otomatis (Testing)
 
-| Peran | Nama | Email / Identifier | NIM | Kata Sandi | Lantai | Kamar |
-| :--- | :--- | :--- | :--- | :--- | :---: | :---: |
-| **Admin** | Admin Asrama | `admin@dormduty.test` | `000001` | `admin123` | 1 | Kamar 101 |
-| **Coordinator** | Koordinator Lantai 2 | `koordinator@dormduty.test` | `000002` | `koor123` | 2 | Kamar 201 |
-
-> **Catatan**: Kolom login dapat diisi menggunakan **Email** maupun **NIM**.
-
----
-
-## Menjalankan Pengujian (Testing)
-
-Semua pengujian frontend dijalankan dari folder `dormduty-frontend`:
-
-```bash
-cd dormduty-frontend
+Seluruh pengujian unit dan integrasi dijalankan langsung dari root direktori:
+code Bash
 
 # Menjalankan seluruh test suite
 npx vitest run
 
-# Menjalankan pengujian dengan laporan cakupan (coverage)
+# Menjalankan pengujian dengan laporan cakupan kode (coverage report)
 npx vitest run --coverage
 
-# Menjalankan pengecekan linter kode
+# Menjalankan pemeriksaan kualitas kode (linter)
 npm run lint
-```
 
----
+Integrasi CI/CD & Deployment (Delcom)
 
-## Struktur Fitur Utama (`features/duties`)
+Proyek ini telah dikonfigurasi dengan pipeline otomasi Delcom CI/CD:
 
-- **Data Layer**:
-  - `api/dutyApi.js`: Klien HTTP untuk operasi CRUD tugas piket, filter statistik, upload bukti, dan verifikasi tugas.
-  - `states/action.js` & `states/reducer.js`: State Redux, action creators, dan asynchronous thunk actions dengan penanganan notifikasi SweetAlert2.
-- **Layout & Navigasi**:
-  - `components/NavbarComponent.jsx`: Menampilkan identitas pengguna, inisial/foto avatar, dan tombol logout.
-  - `components/SidebarComponent.jsx`: Navigasi samping yang responsif dengan penyorotan link aktif.
-  - `layouts/DutyLayout.jsx`: Pelindung rute autentikasi dan penataan tata letak aplikasi utama.
-- **Modal Komponen**:
-  - `modals/AddDutyModal.jsx`: Modal pembuatan jadwal piket baru (khusus Admin & Koordinator).
-  - `modals/UploadProofModal.jsx`: Modal pengunggahan bukti pengerjaan dengan validasi berkas (JPG/PNG/WEBP, maks 5 MB) dan pratinjau gambar.
-  - `modals/VerifyModal.jsx`: Modal keputusan verifikasi (Setujui / Tolak) dengan catatan wajib jika ditolak.
-- **Halaman**:
-  - `pages/HomePage.jsx`: Dashboard jadwal piket, ringkasan kartu statistik, tab filter (Semua, Tugas Saya, Menunggu Verifikasi), filter lantai/tanggal, dan aksi hapus jadwal dengan konfirmasi.
-  - `pages/DetailPage.jsx`: Halaman rincian tugas piket, identitas petugas, jadwal, foto bukti, catatan verifikator, serta tombol aksi kondisional sesuai status dan peran pengguna.
+    GitHub: Menampung kode sumber dan mengirimkan webhook perubahan ke Jenkins.
 
+    Jenkins: Menjalankan pengujian otomatis, analisis kerentanan keamanan (Trivy), serta memaketkan artefak aplikasi (latest-app.zip).
+
+    SonarQube: Menganalisis metrik kualitas kode, duplikasi, dan cakupan pengujian melalui sonar-project.properties.
+
+    Delcom Cloud Deployment: Menyajikan aplikasi web aktif pada domain .slif.cloud.
+
+Struktur Fitur Utama (src/features/duties)
+
+    Data Layer:
+
+        api/dutyApi.js: Klien HTTP untuk operasi CRUD tugas piket, filter statistik, upload bukti, dan verifikasi tugas.
+
+        states/action.js & states/reducer.js: State Redux, action creators, dan asynchronous thunk actions dengan umpan balik SweetAlert2.
+
+    Layout & Navigasi:
+
+        components/NavbarComponent.jsx: Menampilkan profil pengguna aktif, peran, avatar, dan tombol logout.
+
+        components/SidebarComponent.jsx: Navigasi rute utama dengan drawer responsif untuk perangkat mobile.
+
+        layouts/DutyLayout.jsx: Pelindung rute autentikasi dan penataan tata letak aplikasi utama.
+
+    Komponen Modal:
+
+        modals/AddDutyModal.jsx: Formulir penugasan jadwal piket baru (khusus Admin & Koordinator).
+
+        modals/UploadProofModal.jsx: Formulir unggah foto bukti kebersihan (format JPG/PNG/WEBP, maks 5 MB).
+
+        modals/VerifyModal.jsx: Formulir keputusan verifikasi (Setujui / Tolak) dengan catatan evaluasi wajib jika ditolak.
+
+    Halaman:
+
+        pages/HomePage.jsx: Dashboard roster jadwal, metrik statistik, tab filter (Semua, Tugas Saya, Menunggu Verifikasi), serta filter lantai.
+
+        pages/DetailPage.jsx: Rincian mendalam data tugas piket, foto bukti pengerjaan, riwayat evaluasi, dan tombol aksi kondisional sesuai peran pengguna.
+
+
+### Cara Pakai:
+1. Buka file **`README.md`** di VS Code.
+2. Hapus seluruh isinya, lalu tempelkan teks di atas.
+3. Simpan file (`Ctrl + S`).
