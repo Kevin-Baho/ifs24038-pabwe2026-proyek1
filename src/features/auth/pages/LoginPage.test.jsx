@@ -27,6 +27,13 @@ describe('LoginPage', () => {
     vi.clearAllMocks();
   });
 
+  it('memiliki elemen id username, password, dan btn-submit untuk bot grading', () => {
+    setup();
+    expect(document.querySelector('#username')).toBeInTheDocument();
+    expect(document.querySelector('#password')).toBeInTheDocument();
+    expect(document.querySelector('#btn-submit')).toBeInTheDocument();
+  });
+
   it('login sukses lalu pindah ke beranda', async () => {
     const spy = vi.spyOn(authApi, 'login').mockResolvedValue({ token: 't', user: { name: 'Budi' } });
     setup();

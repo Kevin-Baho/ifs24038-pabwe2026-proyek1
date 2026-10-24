@@ -23,26 +23,45 @@ export default function LoginPage() {
     <form onSubmit={onSubmit} className="space-y-4">
       <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Masuk</h2>
       <div>
-        <label htmlFor="identifier" className="text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label htmlFor="username" className="text-sm font-medium text-slate-700 dark:text-slate-300">
           NIM / Email
         </label>
-        <input id="identifier" className={inputClass} value={identifier} onChange={onIdentifierChange} required />
+        <input
+          id="username"
+          name="username"
+          className={inputClass}
+          value={identifier}
+          onChange={onIdentifierChange}
+          required
+        />
       </div>
       <div>
         <label htmlFor="password" className="text-sm font-medium text-slate-700 dark:text-slate-300">
           Kata Sandi
         </label>
-        <input id="password" type="password" className={inputClass} value={password} onChange={onPasswordChange} required />
+        <input
+          id="password"
+          name="password"
+          type="password"
+          className={inputClass}
+          value={password}
+          onChange={onPasswordChange}
+          required
+        />
       </div>
       <button
         type="submit"
+        id="btn-submit"
         disabled={isLoading}
         className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 py-2.5 font-semibold text-white shadow-md shadow-indigo-600/20 hover:from-indigo-700 hover:to-indigo-800 disabled:opacity-60 transition-all active:scale-98"
       >
         {isLoading ? 'Memproses...' : 'Masuk'}
       </button>
       <p className="text-center text-sm text-slate-500 dark:text-slate-400">
-        Belum punya akun? <Link to="/auth/register" className="font-semibold text-indigo-600 hover:underline dark:text-indigo-400">Daftar</Link>
+        Belum punya akun?{' '}
+        <Link to="/auth/register" className="font-semibold text-indigo-600 hover:underline dark:text-indigo-400">
+          Daftar
+        </Link>
       </p>
     </form>
   );
