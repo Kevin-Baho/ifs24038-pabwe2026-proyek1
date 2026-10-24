@@ -3,11 +3,10 @@ import AuthLayout from './features/auth/layouts/AuthLayout';
 import LoginPage from './features/auth/pages/LoginPage';
 import RegisterPage from './features/auth/pages/RegisterPage';
 import DutyLayout from './features/duties/layouts/DutyLayout';
-
-// Placeholder sampai HomePage dibuat di langkah berikutnya
-function DashboardPlaceholder() {
-  return <p className="text-slate-600">Dashboard roster piket segera hadir.</p>;
-}
+import HomePage from './features/duties/pages/HomePage';
+import DetailPage from './features/duties/pages/DetailPage';
+import UsersPage from './features/users/pages/UsersPage';
+import ProfilePage from './features/users/pages/ProfilePage';
 
 export default function App() {
   return (
@@ -18,7 +17,10 @@ export default function App() {
         <Route path="register" element={<RegisterPage />} />
       </Route>
       <Route element={<DutyLayout />}>
-        <Route path="/" element={<DashboardPlaceholder />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/duties/:id" element={<DetailPage />} />
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

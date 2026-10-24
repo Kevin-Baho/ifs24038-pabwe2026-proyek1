@@ -37,7 +37,7 @@ async function request(method, path, { body, params, formData } = {}) {
 
   const res = await fetch(`${baseUrl()}${path}${buildQuery(params)}`, options);
 
-  let json = null;
+  let json;
   try {
     json = await res.json();
   } catch {

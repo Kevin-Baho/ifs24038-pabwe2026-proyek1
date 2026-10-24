@@ -1,28 +1,27 @@
+import { useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { asyncLogout } from '../../auth/states/action';
+import { useSelector } from 'react-redux';
+import NavbarComponent from '../components/NavbarComponent';
+import SidebarComponent from '../components/SidebarComponent';
 
-// Cangkang sementara: proteksi rute + header sederhana.
-// Navbar & Sidebar lengkap ditambahkan di langkah berikutnya.
 export default function DutyLayout() {
-  const dispatch = useDispatch();
-  const { token, user } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   if (!token) return <Navigate to="/auth/login" replace />;
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="flex items-center justify-between bg-white px-6 py-3 shadow">
-        <span className="font-bold text-slate-800">DormDuty</span>
-        <div className="flex items-center gap-3 text-sm">
-          <span className="text-slate-600">{user?.name} ({user?.role})</span>
-          <button onClick={() => dispatch(asyncLogout())} className="rounded-lg border px-3 py-1 hover:bg-slate-100">
-            Keluar
-          </button>
-        </div>
-      </header>
-      <main className="p-6">
-        <Outlet />
-      </main>
+    <div className="min-h-screen bg-slate-50/80 text-slate-800 flex flex-col transition-colors dark:bg-slate-950 dark:text-slate-100">
+      <NavbarComponent onToggleSidebar={() => setSidebarOpen((prev) => !prev)} />
+      <div className="flex flex-1">
+        <SidebarComponent
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
+        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }
