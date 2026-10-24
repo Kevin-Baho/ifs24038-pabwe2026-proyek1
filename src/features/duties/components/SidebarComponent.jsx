@@ -4,7 +4,7 @@ const navLinkClass = ({ isActive }) =>
   `flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all ${
     isActive
       ? 'bg-indigo-50 text-indigo-600 font-semibold shadow-2xs dark:bg-indigo-950/60 dark:text-indigo-400 dark:border dark:border-indigo-800/40'
-      : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-200'
+      : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/60 dark:hover:text-white'
   }`;
 
 export default function SidebarComponent({ isOpen = false, onClose }) {

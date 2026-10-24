@@ -28,7 +28,7 @@ export default function RegisterPage() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Daftar Warga Asrama</h2>
+      <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">Daftar Akun</h1>
       <div>
         <label htmlFor="nim" className={labelClass}>NIM</label>
         <input id="nim" className={inputClass} value={nim} onChange={onNim} required />

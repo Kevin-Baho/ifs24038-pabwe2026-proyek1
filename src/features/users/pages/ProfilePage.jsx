@@ -36,7 +36,7 @@ export default function ProfilePage() {
     }
   }, [me, setBio, setRoom, setFloor]);
 
-  if (!me) return <p className="text-slate-500">Memuat profil...</p>;
+  if (!me) return <p className="text-slate-600 dark:text-slate-300 font-medium">Memuat profil...</p>;
 
   const onSaveProfile = (e) => {
     e.preventDefault();
@@ -63,13 +63,13 @@ export default function ProfilePage() {
 
   return (
     <section className="mx-auto max-w-2xl space-y-5">
-      <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Profil Saya</h2>
+      <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">Profil Saya</h1>
 
       <div className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-xs border border-slate-100 dark:border-slate-800 dark:bg-slate-900 transition-colors">
         <Avatar user={me} size="h-16 w-16 text-xl" />
         <div>
           <p className="text-lg font-bold text-slate-800 dark:text-slate-100">{me.name}</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400">{me.nim} · {me.email}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{me.nim} · {me.email}</p>
         </div>
       </div>
 

@@ -116,15 +116,15 @@ export default function DetailPage() {
           </h2>
           <div className="space-y-2.5 text-sm">
             <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/60">
-              <span className="text-slate-500 dark:text-slate-400">Nama Petugas</span>
+              <span className="text-slate-600 dark:text-slate-300 font-medium">Nama Petugas</span>
               <span className="font-semibold text-slate-800 dark:text-slate-200">{duty.user_name}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/60">
-              <span className="text-slate-500 dark:text-slate-400">NIM</span>
+              <span className="text-slate-600 dark:text-slate-300 font-medium">NIM</span>
               <span className="font-semibold text-slate-800 dark:text-slate-200">{duty.user_nim || '-'}</span>
             </div>
             <div className="flex justify-between py-1">
-              <span className="text-slate-500 dark:text-slate-400">Nomor Kamar</span>
+              <span className="text-slate-600 dark:text-slate-300 font-medium">Nomor Kamar</span>
               <span className="font-semibold text-slate-800 dark:text-slate-200">{duty.user_room || '-'}</span>
             </div>
           </div>
@@ -137,19 +137,19 @@ export default function DetailPage() {
           </h2>
           <div className="space-y-2.5 text-sm">
             <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/60">
-              <span className="text-slate-500 dark:text-slate-400">Tanggal</span>
+              <span className="text-slate-600 dark:text-slate-300 font-medium">Tanggal</span>
               <span className="font-semibold text-slate-800 dark:text-slate-200">{formatDate(duty.scheduled_date)}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/60">
-              <span className="text-slate-500 dark:text-slate-400">Shift</span>
+              <span className="text-slate-600 dark:text-slate-300 font-medium">Shift</span>
               <span className="font-semibold text-slate-800 dark:text-slate-200">{SHIFT_LABEL[duty.shift] || duty.shift}</span>
             </div>
             <div className="flex justify-between py-1 border-b border-slate-50 dark:border-slate-800/60">
-              <span className="text-slate-500 dark:text-slate-400">Zona Piket</span>
+              <span className="text-slate-600 dark:text-slate-300 font-medium">Zona Piket</span>
               <span className="font-semibold text-slate-800 dark:text-slate-200">{duty.zone_name}</span>
             </div>
             <div className="flex justify-between py-1">
-              <span className="text-slate-500 dark:text-slate-400">Lantai</span>
+              <span className="text-slate-600 dark:text-slate-300 font-medium">Lantai</span>
               <span className="font-semibold text-slate-800 dark:text-slate-200">Lantai {duty.floor}</span>
             </div>
           </div>
@@ -174,17 +174,17 @@ export default function DetailPage() {
             {duty.note && (
               <div className="rounded-xl bg-slate-50 p-3.5 text-sm dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
                 <span className="font-semibold text-slate-700 dark:text-slate-200">Catatan Petugas: </span>
-                <span className="text-slate-600 dark:text-slate-400">{duty.note}</span>
+                <span className="text-slate-600 dark:text-slate-300">{duty.note}</span>
               </div>
             )}
             {duty.verifier_name && (
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Diverifikasi oleh: <span className="font-semibold text-slate-700 dark:text-slate-300">{duty.verifier_name}</span>
+              <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                Diverifikasi oleh: <span className="font-semibold text-slate-700 dark:text-slate-200">{duty.verifier_name}</span>
               </p>
             )}
           </div>
         ) : (
-          <p className="py-6 text-center text-sm text-slate-400 dark:text-slate-500 italic">
+          <p className="py-6 text-center text-sm text-slate-600 dark:text-slate-300 font-medium italic">
             Belum ada foto bukti yang diunggah untuk jadwal piket ini.
           </p>
         )}

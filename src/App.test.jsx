@@ -78,7 +78,7 @@ describe('App routes', () => {
 
   it('/auth/register menampilkan form pendaftaran', () => {
     renderWithProviders(<App />, opts('/auth/register'));
-    expect(screen.getByRole('heading', { name: 'Daftar Warga Asrama' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Daftar Akun' })).toBeInTheDocument();
   });
 
   it('/ dengan token menampilkan dashboard / HomePage', async () => {

@@ -260,11 +260,11 @@ export default function HomePage() {
                       </td>
                       <td className="whitespace-nowrap px-4 py-3">
                         <div className="font-medium text-slate-800 dark:text-slate-200">{duty.zone_name}</div>
-                        <div className="text-xs text-slate-400 dark:text-slate-500">Lantai {duty.floor}</div>
+                        <div className="text-xs text-slate-600 dark:text-slate-300 font-medium">Lantai {duty.floor}</div>
                       </td>
                       <td className="whitespace-nowrap px-4 py-3">
                         <div className="font-medium text-slate-800 dark:text-slate-200">{duty.user_name}</div>
-                        <div className="text-xs text-slate-400 dark:text-slate-500">
+                        <div className="text-xs text-slate-600 dark:text-slate-300 font-medium">
                           NIM: {duty.user_nim || '-'} • Kamar: {duty.user_room || '-'}
                         </div>
                       </td>

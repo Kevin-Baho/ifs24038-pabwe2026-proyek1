@@ -19,7 +19,7 @@ export default function UsersPage() {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">Direktori Warga Asrama</h2>
+      <h1 className="text-xl font-semibold text-slate-800 dark:text-slate-100">Direktori Warga Asrama</h1>
       <div className="flex flex-wrap gap-3">
         <input
           aria-label="Cari warga"
@@ -41,8 +41,8 @@ export default function UsersPage() {
         </select>
       </div>
 
-      {isLoading && <p className="text-sm text-slate-500 dark:text-slate-400">Memuat...</p>}
-      {!isLoading && users.length === 0 && <p className="text-slate-500 dark:text-slate-400">Tidak ada warga ditemukan.</p>}
+      {isLoading && <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">Memuat...</p>}
+      {!isLoading && users.length === 0 && <p className="text-slate-600 dark:text-slate-300 font-medium">Tidak ada warga ditemukan.</p>}
 
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {users.map((u) => (
@@ -50,7 +50,7 @@ export default function UsersPage() {
             <Avatar user={u} />
             <div className="min-w-0">
               <p className="truncate font-semibold text-slate-800 dark:text-slate-100">{u.name}</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">{u.nim} · {u.room_number} · Lt. {u.floor}</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{u.nim} · {u.room_number} · Lt. {u.floor}</p>
               <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">{ROLE_LABEL[u.role] || u.role}</span>
             </div>
           </li>

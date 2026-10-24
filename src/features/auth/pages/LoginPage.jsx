@@ -21,7 +21,7 @@ export default function LoginPage() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Masuk</h2>
+      <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">Masuk</h1>
       <div>
         <label htmlFor="username" className="text-sm font-medium text-slate-700 dark:text-slate-300">
           NIM / Email
