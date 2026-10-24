@@ -74,7 +74,7 @@ export default function ProfilePage() {
       </div>
 
       <form onSubmit={onSaveProfile} className={cardClass}>
-        <h3 className="font-semibold text-slate-800 dark:text-slate-100">Data Diri</h3>
+        <h2 className="font-semibold text-slate-800 dark:text-slate-100 text-lg">Data Diri</h2>
         <div>
           <label htmlFor="bio" className={labelClass}>Bio</label>
           <textarea id="bio" rows={3} className={inputClass} value={bio} onChange={onBioChange} />
@@ -93,7 +93,7 @@ export default function ProfilePage() {
       </form>
 
       <form onSubmit={onUpload} className={cardClass}>
-        <h3 className="font-semibold text-slate-800 dark:text-slate-100">Foto Profil</h3>
+        <h2 className="font-semibold text-slate-800 dark:text-slate-100 text-lg">Foto Profil</h2>
         <label htmlFor="photo" className={labelClass}>Pilih Foto (JPG/PNG/WEBP, maks 5 MB)</label>
         <input
           id="photo"
@@ -106,7 +106,7 @@ export default function ProfilePage() {
       </form>
 
       <form onSubmit={onChangePassword} className={cardClass}>
-        <h3 className="font-semibold text-slate-800 dark:text-slate-100">Ubah Kata Sandi</h3>
+        <h2 className="font-semibold text-slate-800 dark:text-slate-100 text-lg">Ubah Kata Sandi</h2>
         <div>
           <label htmlFor="old-password" className={labelClass}>Kata Sandi Lama</label>
           <input id="old-password" type="password" className={inputClass} value={oldPassword} onChange={onOldChange} required />

@@ -20,13 +20,14 @@ const setup = () =>
   );
 
 const fillForm = async () => {
-  await userEvent.type(screen.getByLabelText('NIM'), '210099');
-  await userEvent.type(screen.getByLabelText('Nama Lengkap'), 'Andi');
-  await userEvent.type(screen.getByLabelText('Email'), 'andi@dormduty.test');
-  await userEvent.type(screen.getByLabelText('Nomor Kamar'), 'Kamar 210');
-  await userEvent.type(screen.getByLabelText('Lantai'), '2');
-  await userEvent.type(screen.getByLabelText('Kata Sandi'), 'rahasia1');
-  await userEvent.click(screen.getByRole('button', { name: 'Daftar' }));
+  const user = userEvent.setup();
+  await user.type(screen.getByLabelText('NIM'), '210099');
+  await user.type(screen.getByLabelText('Nama Lengkap'), 'Andi');
+  await user.type(screen.getByLabelText('Email'), 'andi@dormduty.test');
+  await user.type(screen.getByLabelText('Nomor Kamar'), 'Kamar 210');
+  await user.type(screen.getByLabelText('Lantai'), '2');
+  await user.type(screen.getByLabelText('Kata Sandi'), 'rahasia1');
+  await user.click(screen.getByRole('button', { name: 'Daftar' }));
 };
 
 describe('RegisterPage', () => {

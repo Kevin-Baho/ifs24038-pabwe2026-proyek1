@@ -23,9 +23,11 @@ describe('ProfilePage', () => {
     setup();
     expect(screen.getByText('Memuat profil...')).toBeInTheDocument();
     expect(await screen.findByText('210001 · budi@dormduty.test')).toBeInTheDocument();
-    expect(screen.getByLabelText('Bio')).toHaveValue('Halo');
-    expect(screen.getByLabelText('Nomor Kamar')).toHaveValue('Kamar 204');
-    expect(screen.getByLabelText('Lantai')).toHaveValue(2);
+    await waitFor(() => {
+      expect(screen.getByLabelText('Bio')).toHaveValue('Halo');
+      expect(screen.getByLabelText('Nomor Kamar')).toHaveValue('Kamar 204');
+      expect(screen.getByLabelText('Lantai')).toHaveValue(2);
+    });
   });
 
   it('menyimpan perubahan profil', async () => {
