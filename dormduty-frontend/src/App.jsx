@@ -1,23 +1,26 @@
-import { useEffect, useState } from 'react';
-import api from './helpers/apiHelper';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import AuthLayout from './features/auth/layouts/AuthLayout';
+import LoginPage from './features/auth/pages/LoginPage';
+import RegisterPage from './features/auth/pages/RegisterPage';
+import DutyLayout from './features/duties/layouts/DutyLayout';
 
-// Halaman sementara untuk memastikan frontend terhubung ke backend.
-// Akan diganti dengan routing sesungguhnya di Langkah 3.
+// Placeholder sampai HomePage dibuat di langkah berikutnya
+function DashboardPlaceholder() {
+  return <p className="text-slate-600">Dashboard roster piket segera hadir.</p>;
+}
+
 export default function App() {
-  const [status, setStatus] = useState('Memeriksa koneksi API...');
-
-  useEffect(() => {
-    api.get('/health')
-      .then((res) => setStatus(res.message))
-      .catch((err) => setStatus(`Gagal terhubung: ${err.message}`));
-  }, []);
-
   return (
-    <main className="min-h-screen grid place-items-center bg-slate-50">
-      <div className="rounded-xl bg-white p-8 shadow text-center">
-        <h1 className="text-2xl font-bold text-slate-800">DormDuty</h1>
-        <p className="mt-2 text-slate-600">{status}</p>
-      </div>
-    </main>
+    <Routes>
+      <Route path="/auth" element={<AuthLayout />}>
+        <Route index element={<Navigate to="login" replace />} />
+        <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<RegisterPage />} />
+      </Route>
+      <Route element={<DutyLayout />}>
+        <Route path="/" element={<DashboardPlaceholder />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
