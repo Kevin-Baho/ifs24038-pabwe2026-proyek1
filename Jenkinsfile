@@ -7,6 +7,9 @@ pipeline {
         skipDefaultCheckout(true)
         // Stop later stages if a publisher marks the build UNSTABLE/FAILURE mid-run
         skipStagesAfterUnstable()
+        // Satu proyek hanya boleh jalankan satu job.
+        // Jika ada build baru dipicu, build lama otomatis di-abort.
+        disableConcurrentBuilds(abortPrevious: true)
     }
 
     stages {
