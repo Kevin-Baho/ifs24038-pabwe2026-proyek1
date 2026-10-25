@@ -74,11 +74,11 @@ export default function Button({
 
 Button.propTypes = {
   children: PropTypes.node,
-  variant: PropTypes.string,
+  variant: PropTypes.oneOf(['primary', 'secondary', 'danger', 'ghost']),
   isLoading: PropTypes.bool,
   loadingText: PropTypes.string,
   disabled: PropTypes.bool,
-  type: PropTypes.string,
+  type: PropTypes.oneOf(['button', 'submit', 'reset']),
   onClick: PropTypes.func,
   className: PropTypes.string,
 };

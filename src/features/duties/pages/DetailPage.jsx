@@ -6,6 +6,7 @@ import { assetUrl } from '../../../helpers/apiHelper';
 import { formatDate, SHIFT_LABEL, STATUS_META } from '../../../helpers/toolsHelper';
 import UploadProofModal from '../modals/UploadProofModal';
 import VerifyModal from '../modals/VerifyModal';
+import Button from '../../../components/common/Button';
 
 export default function DetailPage() {
   const { id } = useParams();
@@ -192,31 +193,30 @@ export default function DetailPage() {
         {/* Tombol Aksi Kondisional */}
         <div className="flex flex-wrap gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
           {canUploadProof && (
-            <button
+            <Button
               type="button"
               onClick={() => setIsUploadModalOpen(true)}
-              className="rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-600/20 hover:from-indigo-700 hover:to-indigo-800 active:scale-98 transition-all"
             >
               Unggah Bukti Selesai
-            </button>
+            </Button>
           )}
 
           {canVerify && (
             <>
-              <button
+              <Button
                 type="button"
+                className="bg-green-600 hover:bg-green-700 shadow-green-600/20"
                 onClick={() => setVerifyModalState({ isOpen: true, initialStatus: 'approved' })}
-                className="rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-green-600/20 hover:bg-green-700 active:scale-98 transition-all"
               >
                 Setujui (Approve)
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant="danger"
                 onClick={() => setVerifyModalState({ isOpen: true, initialStatus: 'rejected' })}
-                className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-red-600/20 hover:bg-red-700 active:scale-98 transition-all"
               >
                 Tolak (Reject)
-              </button>
+              </Button>
             </>
           )}
         </div>

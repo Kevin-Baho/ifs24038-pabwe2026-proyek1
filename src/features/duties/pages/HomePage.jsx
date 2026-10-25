@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { asyncDeleteDuty, asyncFetchDuties, asyncFetchDutyStats } from '../states/action';
 import { formatDate, SHIFT_LABEL, STATUS_META, showConfirm } from '../../../helpers/toolsHelper';
 import AddDutyModal from '../modals/AddDutyModal';
+import Button from '../../../components/common/Button';
 
 export default function HomePage() {
   const dispatch = useDispatch();
@@ -163,16 +164,16 @@ export default function HomePage() {
           </p>
         </div>
         {canManage && (
-          <button
+          <Button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-600/20 hover:from-indigo-700 hover:to-indigo-800 active:scale-98 transition-all"
+            className="py-2.5"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
             + Jadwalkan Piket
-          </button>
+          </Button>
         )}
       </div>
 

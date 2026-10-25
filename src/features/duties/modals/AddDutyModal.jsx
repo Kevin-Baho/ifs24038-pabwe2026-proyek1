@@ -7,6 +7,8 @@ import { showError } from '../../../helpers/toolsHelper';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
 import Input from '../../../components/common/Input';
+import Select from '../../../components/common/Select';
+import useFormSubmit from '../../../hooks/useFormSubmit';
 
 const EMPTY_ARRAY = [];
 
@@ -19,20 +21,18 @@ export default function AddDutyModal({ isOpen, onClose, onSuccess }) {
   const [zoneId, setZoneId] = useState('');
   const [scheduledDate, setScheduledDate] = useState('');
   const [shift, setShift] = useState('pagi');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setUserId('');
     setZoneId('');
     setScheduledDate('');
     setShift('pagi');
-    setIsSubmitting(false);
-  };
+  }, []);
 
   const handleClose = useCallback(() => {
     resetForm();
     onClose();
-  }, [onClose]);
+  }, [onClose, resetForm]);
 
   useEffect(() => {
     if (isOpen) {
@@ -41,14 +41,12 @@ export default function AddDutyModal({ isOpen, onClose, onSuccess }) {
     }
   }, [isOpen, dispatch]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const { isSubmitting, handleSubmit } = useFormSubmit(async () => {
     if (!userId || !zoneId || !scheduledDate || !shift) {
       showError('Semua kolom wajib diisi');
-      return;
+      return false;
     }
 
-    setIsSubmitting(true);
     const success = await Promise.resolve(
       dispatch(
         asyncAddDuty({
@@ -59,55 +57,46 @@ export default function AddDutyModal({ isOpen, onClose, onSuccess }) {
         })
       )
     );
-    setIsSubmitting(false);
 
     if (success) {
       resetForm();
       onSuccess?.();
       onClose();
+      return true;
     }
-  };
+    return false;
+  });
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Jadwalkan Piket Baru">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="user_id" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            Petugas Asrama
-          </label>
-          <select
-            id="user_id"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-            className="w-full rounded-xl border border-slate-300/80 bg-white px-3 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-          >
-            <option value="">-- Pilih Petugas --</option>
-            {users.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.name} (NIM: {u.nim || '-'}, Kamar: {u.room_number || '-'})
-              </option>
-            ))}
-          </select>
-        </div>
+        <Select
+          id="user_id"
+          label="Petugas Asrama"
+          value={userId}
+          onChange={(e) => setUserId(e.target.value)}
+        >
+          <option value="">-- Pilih Petugas --</option>
+          {users.map((u) => (
+            <option key={u.id} value={u.id}>
+              {u.name} (NIM: {u.nim || '-'}, Kamar: {u.room_number || '-'})
+            </option>
+          ))}
+        </Select>
 
-        <div>
-          <label htmlFor="zone_id" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            Zona Piket
-          </label>
-          <select
-            id="zone_id"
-            value={zoneId}
-            onChange={(e) => setZoneId(e.target.value)}
-            className="w-full rounded-xl border border-slate-300/80 bg-white px-3 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-          >
-            <option value="">-- Pilih Zona --</option>
-            {zones.map((z) => (
-              <option key={z.id} value={z.id}>
-                {z.name} (Lantai {z.floor})
-              </option>
-            ))}
-          </select>
-        </div>
+        <Select
+          id="zone_id"
+          label="Zona Piket"
+          value={zoneId}
+          onChange={(e) => setZoneId(e.target.value)}
+        >
+          <option value="">-- Pilih Zona --</option>
+          {zones.map((z) => (
+            <option key={z.id} value={z.id}>
+              {z.name} (Lantai {z.floor})
+            </option>
+          ))}
+        </Select>
 
         <Input
           id="scheduled_date"
@@ -117,20 +106,15 @@ export default function AddDutyModal({ isOpen, onClose, onSuccess }) {
           onChange={(e) => setScheduledDate(e.target.value)}
         />
 
-        <div>
-          <label htmlFor="shift" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            Shift
-          </label>
-          <select
-            id="shift"
-            value={shift}
-            onChange={(e) => setShift(e.target.value)}
-            className="w-full rounded-xl border border-slate-300/80 bg-white px-3 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-          >
-            <option value="pagi">Pagi</option>
-            <option value="sore">Sore</option>
-          </select>
-        </div>
+        <Select
+          id="shift"
+          label="Shift"
+          value={shift}
+          onChange={(e) => setShift(e.target.value)}
+        >
+          <option value="pagi">Pagi</option>
+          <option value="sore">Sore</option>
+        </Select>
 
         <div className="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
           <Button type="button" variant="secondary" onClick={handleClose}>
@@ -146,8 +130,7 @@ export default function AddDutyModal({ isOpen, onClose, onSuccess }) {
 }
 
 AddDutyModal.propTypes = {
-  isOpen: PropTypes.bool,
-  onClose: PropTypes.func,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func,
 };
-

@@ -4,6 +4,8 @@ import useInput from '../../../hooks/useInput';
 import useDebounce from '../../../hooks/useDebounce';
 import { asyncFetchUsers } from '../states/action';
 import Avatar from '../components/Avatar';
+import Input from '../../../components/common/Input';
+import Select from '../../../components/common/Select';
 
 const ROLE_LABEL = { resident: 'Warga', coordinator: 'Koordinator', admin: 'Admin' };
 const FLOORS = [1, 2, 3, 4, 5];
@@ -22,25 +24,29 @@ export default function UsersPage() {
   return (
     <section className="space-y-4">
       <h1 className="text-xl font-semibold text-slate-800 dark:text-slate-100">Direktori Warga Asrama</h1>
-      <div className="flex flex-wrap gap-3">
-        <input
-          aria-label="Cari warga"
-          placeholder="Cari nama, NIM, atau kamar"
-          value={search}
-          onChange={onSearchChange}
-          className="min-w-64 flex-1 rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
-        />
-        <select
-          aria-label="Filter lantai"
-          value={floor}
-          onChange={onFloorChange}
-          className="rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
-        >
-          <option value="">Semua Lantai</option>
-          {FLOORS.map((f) => (
-            <option key={f} value={f}>Lantai {f}</option>
-          ))}
-        </select>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex-1">
+          <Input
+            id="search-users"
+            aria-label="Cari warga"
+            placeholder="Cari nama, NIM, atau kamar"
+            value={search}
+            onChange={onSearchChange}
+          />
+        </div>
+        <div className="w-full sm:w-48">
+          <Select
+            id="floor-filter"
+            aria-label="Filter lantai"
+            value={floor}
+            onChange={onFloorChange}
+          >
+            <option value="">Semua Lantai</option>
+            {FLOORS.map((f) => (
+              <option key={f} value={f}>Lantai {f}</option>
+            ))}
+          </Select>
+        </div>
       </div>
 
       {isLoading && <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">Memuat...</p>}

@@ -5,6 +5,8 @@ import { asyncUploadProof } from '../states/action';
 import { showError } from '../../../helpers/toolsHelper';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
+import Textarea from '../../../components/common/Textarea';
+import useFormSubmit from '../../../hooks/useFormSubmit';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
@@ -15,14 +17,12 @@ export default function UploadProofModal({ isOpen, onClose, dutyId, onSuccess })
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [note, setNote] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resetForm = useCallback(() => {
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setFile(null);
     setPreviewUrl(null);
     setNote('');
-    setIsSubmitting(false);
   }, [previewUrl]);
 
   const handleClose = useCallback(() => {
@@ -57,23 +57,21 @@ export default function UploadProofModal({ isOpen, onClose, dutyId, onSuccess })
     setPreviewUrl(URL.createObjectURL(selected));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const { isSubmitting, handleSubmit } = useFormSubmit(async () => {
     if (!file) {
       showError('Foto bukti wajib diunggah');
-      return;
+      return false;
     }
 
-    setIsSubmitting(true);
     const success = await Promise.resolve(dispatch(asyncUploadProof(dutyId, file, note)));
-    setIsSubmitting(false);
-
     if (success) {
       resetForm();
       onSuccess?.();
       onClose();
+      return true;
     }
-  };
+    return false;
+  });
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Unggah Bukti Selesai Piket">
@@ -102,19 +100,14 @@ export default function UploadProofModal({ isOpen, onClose, dutyId, onSuccess })
           </div>
         )}
 
-        <div>
-          <label htmlFor="proof_note" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            Catatan Pengerjaan (Opsional)
-          </label>
-          <textarea
-            id="proof_note"
-            rows={3}
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Contoh: Sudah disapu dan dipel sampai bersih..."
-            className="w-full rounded-xl border border-slate-300/80 bg-white px-3 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-          />
-        </div>
+        <Textarea
+          id="proof_note"
+          label="Catatan Pengerjaan (Opsional)"
+          rows={3}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Contoh: Sudah disapu dan dipel sampai bersih..."
+        />
 
         <div className="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
           <Button type="button" variant="secondary" onClick={handleClose}>
@@ -130,9 +123,8 @@ export default function UploadProofModal({ isOpen, onClose, dutyId, onSuccess })
 }
 
 UploadProofModal.propTypes = {
-  isOpen: PropTypes.bool,
-  onClose: PropTypes.func,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
   dutyId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   onSuccess: PropTypes.func,
 };
-

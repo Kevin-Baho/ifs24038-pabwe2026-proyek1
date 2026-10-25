@@ -5,6 +5,8 @@ import { asyncVerifyDuty } from '../states/action';
 import { showError } from '../../../helpers/toolsHelper';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
+import Textarea from '../../../components/common/Textarea';
+import useFormSubmit from '../../../hooks/useFormSubmit';
 
 export default function VerifyModal({
   isOpen,
@@ -17,12 +19,10 @@ export default function VerifyModal({
 
   const [status, setStatus] = useState(initialStatus);
   const [note, setNote] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resetForm = useCallback(() => {
     setStatus(initialStatus);
     setNote('');
-    setIsSubmitting(false);
   }, [initialStatus]);
 
   const handleClose = useCallback(() => {
@@ -30,14 +30,12 @@ export default function VerifyModal({
     onClose();
   }, [onClose, resetForm]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const { isSubmitting, handleSubmit } = useFormSubmit(async () => {
     if (status === 'rejected' && !note.trim()) {
       showError('Catatan alasan wajib diisi saat menolak');
-      return;
+      return false;
     }
 
-    setIsSubmitting(true);
     const success = await Promise.resolve(
       dispatch(
         asyncVerifyDuty(dutyId, {
@@ -46,14 +44,15 @@ export default function VerifyModal({
         })
       )
     );
-    setIsSubmitting(false);
 
     if (success) {
       resetForm();
       onSuccess?.();
       onClose();
+      return true;
     }
-  };
+    return false;
+  });
 
   const confirmText = status === 'approved' ? 'Konfirmasi Setujui' : 'Konfirmasi Tolak';
   const submitButtonClass =
@@ -111,23 +110,18 @@ export default function VerifyModal({
           </div>
         </div>
 
-        <div>
-          <label htmlFor="verify_note" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            Catatan Evaluasi {status === 'rejected' ? '(Wajib Diisi)' : '(Opsional)'}
-          </label>
-          <textarea
-            id="verify_note"
-            rows={3}
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder={
-              status === 'rejected'
-                ? 'Jelaskan alasan penolakan dan bagian yang wajib diulang...'
-                : 'Catatan tambahan atau apresiasi...'
-            }
-            className="w-full rounded-xl border border-slate-300/80 bg-white px-3 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-          />
-        </div>
+        <Textarea
+          id="verify_note"
+          label={`Catatan Evaluasi ${status === 'rejected' ? '(Wajib Diisi)' : '(Opsional)'}`}
+          rows={3}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder={
+            status === 'rejected'
+              ? 'Jelaskan alasan penolakan dan bagian yang wajib diulang...'
+              : 'Catatan tambahan atau apresiasi...'
+          }
+        />
 
         <div className="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
           <Button type="button" variant="secondary" onClick={handleClose}>
@@ -148,10 +142,9 @@ export default function VerifyModal({
 }
 
 VerifyModal.propTypes = {
-  isOpen: PropTypes.bool,
-  onClose: PropTypes.func,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
   dutyId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  initialStatus: PropTypes.string,
+  initialStatus: PropTypes.oneOf(['approved', 'rejected']),
   onSuccess: PropTypes.func,
 };
-

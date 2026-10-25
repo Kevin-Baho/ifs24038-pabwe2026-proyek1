@@ -1,3 +1,30 @@
+/**
+ * ============================================================================
+ * EVALUASI KEAMANAN PENYIMPANAN TOKEN SESI (SECURITY EVALUATION & RISK AUDIT)
+ * ============================================================================
+ * 
+ * 1. Penyimpanan Sesi Saat Ini (localStorage):
+ *    - Token JWT disimpan di `localStorage` melalui kunci 'dormduty_token'.
+ *    - Kelebihan: Sederhana untuk SPA tanpa ketergantungan server-side session,
+ *      mendukung request lintas domain (CORS), dan tidak rentan terhadap CSRF
+ *      (karena token tidak dikirim otomatis oleh browser seperti Cookie).
+ * 
+ * 2. Risiko Keamanan (Risk Evaluation):
+ *    - Kerentanan Utama: Rentan terhadap serangan Cross-Site Scripting (XSS).
+ *      Skrip jahat pihak ketiga yang dieksekusi di context origin ini dapat membaca
+ *      `localStorage.getItem(TOKEN_KEY)` dan mencuri token pengguna.
+ * 
+ * 3. Mitigasi & Rekomendasi Arsitektural:
+ *    - Jangka Pendek (Frontend):
+ *      a. Pastikan Content Security Policy (CSP) ketat pada server hosting/header.
+ *      b. Hindari `dangerouslySetInnerHTML` dan sanitasi semua input/output data.
+ *      c. Gunakan masa kedaluwarsa token (JWT expiration) yang relatif singkat.
+ *    - Jangka Panjang (Produksi):
+ *      Gunakan `httpOnly`, `Secure`, `SameSite=Strict/Lax` Cookies untuk transfer
+ *      sesi auth agar JavaScript di browser sama sekali tidak memiliki akses langsung
+ *      ke token, dikombinasikan dengan Anti-CSRF token untuk mutasi state.
+ * ============================================================================
+ */
 export const TOKEN_KEY = 'dormduty_token';
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
