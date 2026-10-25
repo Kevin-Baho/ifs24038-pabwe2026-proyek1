@@ -7,6 +7,7 @@ import { formatDate, SHIFT_LABEL, STATUS_META } from '../../../helpers/toolsHelp
 import UploadProofModal from '../modals/UploadProofModal';
 import VerifyModal from '../modals/VerifyModal';
 import Button from '../../../components/common/Button';
+import Card from '../../../components/common/Card';
 
 export default function DetailPage() {
   const { id } = useParams();
@@ -40,7 +41,7 @@ export default function DetailPage() {
 
   if (!duty) {
     return (
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-8 text-center shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <Card className="p-8 text-center">
         <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">Tugas tidak ditemukan</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
           Jadwal piket yang Anda cari tidak tersedia atau telah dihapus.
@@ -51,7 +52,7 @@ export default function DetailPage() {
         >
           Kembali ke Beranda
         </Link>
-      </div>
+      </Card>
     );
   }
 
@@ -111,7 +112,7 @@ export default function DetailPage() {
       {/* Grid Informasi Tugas */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Identitas Petugas */}
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs transition-colors dark:border-slate-800 dark:bg-slate-900 space-y-3">
+        <Card className="space-y-3">
           <h2 className="text-base font-semibold text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-2">
             Identitas Petugas
           </h2>
@@ -129,10 +130,10 @@ export default function DetailPage() {
               <span className="font-semibold text-slate-800 dark:text-slate-200">{duty.user_room || '-'}</span>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Informasi Jadwal & Zona */}
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs transition-colors dark:border-slate-800 dark:bg-slate-900 space-y-3">
+        <Card className="space-y-3">
           <h2 className="text-base font-semibold text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-2">
             Jadwal & Lokasi
           </h2>
@@ -154,11 +155,11 @@ export default function DetailPage() {
               <span className="font-semibold text-slate-800 dark:text-slate-200">Lantai {duty.floor}</span>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Bagian Bukti Pengerjaan */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs transition-colors dark:border-slate-800 dark:bg-slate-900 space-y-4">
+      <Card className="space-y-4">
         <h2 className="text-base font-semibold text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-2">
           Bukti Pengerjaan & Catatan
         </h2>
@@ -220,7 +221,7 @@ export default function DetailPage() {
             </>
           )}
         </div>
-      </div>
+      </Card>
 
       {/* Modal Unggah Bukti */}
       <UploadProofModal

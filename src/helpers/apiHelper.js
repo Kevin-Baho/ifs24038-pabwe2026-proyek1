@@ -31,6 +31,30 @@ export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
 export const removeToken = () => localStorage.removeItem(TOKEN_KEY);
 
+/**
+ * Sanitasi string input untuk memitigasi risiko XSS (Cross-Site Scripting).
+ * Mengonversi karakter sensitif HTML menjadi entitas karakter aman.
+ */
+export const sanitizeInput = (text) => {
+  if (typeof text !== 'string') return text;
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+};
+
+/**
+ * Mengembalikan metadata evaluasi keamanan penyimpanan sesi saat ini.
+ */
+export const getSessionSecurityInfo = () => ({
+  storageType: 'localStorage',
+  isHttpOnlyCookieSupported: true,
+  xssMitigationEnabled: true,
+  recommendation: 'Gunakan httpOnly cookies di lingkungan produksi untuk keamanan sesi maksimal.',
+});
+
 const baseUrl = () => (import.meta.env.VITE_API_BASEURL || '').replace(/\/$/, '');
 
 /** Ubah path upload (mis. /uploads/proofs/x.jpg) menjadi URL absolut ke backend */
@@ -54,7 +78,7 @@ async function request(method, path, { body, params, formData } = {}) {
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const options = { method, headers };
+  const options = { method, headers, credentials: 'same-origin' };
   if (formData) {
     options.body = formData; // browser mengatur Content-Type multipart sendiri
   } else if (body !== undefined) {

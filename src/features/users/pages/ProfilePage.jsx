@@ -7,9 +7,7 @@ import Avatar from '../components/Avatar';
 import Input from '../../../components/common/Input';
 import Textarea from '../../../components/common/Textarea';
 import Button from '../../../components/common/Button';
-
-const cardClass =
-  'space-y-3 rounded-2xl bg-white p-5 shadow-xs border border-slate-100 dark:border-slate-800 dark:bg-slate-900 transition-colors';
+import Card from '../../../components/common/Card';
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
@@ -65,15 +63,15 @@ export default function ProfilePage() {
     <section className="mx-auto max-w-2xl space-y-5">
       <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">Profil Saya</h1>
 
-      <div className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-xs border border-slate-100 dark:border-slate-800 dark:bg-slate-900 transition-colors">
+      <Card className="flex items-center gap-4">
         <Avatar user={me} size="h-16 w-16 text-xl" />
         <div>
           <p className="text-lg font-bold text-slate-800 dark:text-slate-100">{me.name}</p>
           <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{me.nim} · {me.email}</p>
         </div>
-      </div>
+      </Card>
 
-      <form onSubmit={onSaveProfile} className={cardClass}>
+      <Card as="form" onSubmit={onSaveProfile} className="space-y-3">
         <h2 className="font-semibold text-slate-800 dark:text-slate-100 text-lg">Data Diri</h2>
         <Textarea id="bio" label="Bio" rows={3} value={bio} onChange={onBioChange} />
         <div className="grid grid-cols-2 gap-3">
@@ -81,9 +79,9 @@ export default function ProfilePage() {
           <Input id="floor" type="number" min="1" label="Lantai" value={floor} onChange={onFloorChange} required />
         </div>
         <Button type="submit">Simpan Profil</Button>
-      </form>
+      </Card>
 
-      <form onSubmit={onUpload} className={cardClass}>
+      <Card as="form" onSubmit={onUpload} className="space-y-3">
         <h2 className="font-semibold text-slate-800 dark:text-slate-100 text-lg">Foto Profil</h2>
         <div>
           <label htmlFor="photo" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
@@ -98,15 +96,15 @@ export default function ProfilePage() {
           />
         </div>
         <Button type="submit">Unggah Foto</Button>
-      </form>
+      </Card>
 
-      <form onSubmit={onChangePassword} className={cardClass}>
+      <Card as="form" onSubmit={onChangePassword} className="space-y-3">
         <h2 className="font-semibold text-slate-800 dark:text-slate-100 text-lg">Ubah Kata Sandi</h2>
         <Input id="old-password" type="password" label="Kata Sandi Lama" value={oldPassword} onChange={onOldChange} required />
         <Input id="new-password" type="password" minLength={6} label="Kata Sandi Baru" value={newPassword} onChange={onNewChange} required />
         <Input id="confirm-password" type="password" label="Konfirmasi Kata Sandi Baru" value={confirm} onChange={onConfirmChange} required />
         <Button type="submit">Ubah Kata Sandi</Button>
-      </form>
+      </Card>
     </section>
   );
 }

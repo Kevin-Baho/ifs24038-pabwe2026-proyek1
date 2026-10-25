@@ -1,8 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import ErrorBoundary from './ErrorBoundary';
+
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]):not([tabindex="-1"]), [href], input:not([disabled]):not([tabindex="-1"]), select:not([disabled]):not([tabindex="-1"]), textarea:not([disabled]):not([tabindex="-1"]), [tabindex]:not([tabindex="-1"]):not([disabled])';
 
 /**
- * Komponen modal dialog yang dapat digunakan kembali.
+ * Komponen modal dialog yang dapat digunakan kembali dengan focus trap dan error boundary.
  * @param {Object} props
  * @param {boolean} props.isOpen - Status visibilitas modal
  * @param {Function} props.onClose - Fungsi callback penutupan modal
@@ -19,21 +23,63 @@ export default function Modal({
   footer,
   className = 'w-full max-w-lg',
 }) {
+  const dialogRef = useRef(null);
+
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) return undefined;
+
+    const previousActiveElement = document.activeElement;
+
+    const timer = setTimeout(() => {
+      const focusable = dialogRef.current?.querySelectorAll(FOCUSABLE_SELECTOR);
+      if (focusable && focusable.length > 0) {
+        focusable[0].focus();
+      }
+    }, 0);
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose?.();
+      if (e.key === 'Escape') {
+        onClose?.();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const focusable = dialogRef.current?.querySelectorAll(FOCUSABLE_SELECTOR);
+        if (!focusable || focusable.length === 0) {
+          e.preventDefault();
+          return;
+        }
+
+        const firstElement = focusable[0];
+        const lastElement = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement || !dialogRef.current?.contains(document.activeElement)) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else if (document.activeElement === lastElement || !dialogRef.current?.contains(document.activeElement)) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
     };
 
     globalThis.addEventListener('keydown', handleKeyDown);
-    return () => globalThis.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      clearTimeout(timer);
+      globalThis.removeEventListener('keydown', handleKeyDown);
+      if (previousActiveElement && typeof previousActiveElement.focus === 'function') {
+        previousActiveElement.focus();
+      }
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   return (
     <dialog
+      ref={dialogRef}
       open
       aria-modal="true"
       className="fixed inset-0 z-50 m-0 flex h-full w-full max-h-none max-w-none items-center justify-center border-0 bg-transparent p-4"
@@ -62,7 +108,9 @@ export default function Modal({
           </div>
         )}
 
-        <div className="space-y-4">{children}</div>
+        <ErrorBoundary>
+          <div className="space-y-4">{children}</div>
+        </ErrorBoundary>
 
         {footer && (
           <div className="mt-4 flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
@@ -82,5 +130,3 @@ Modal.propTypes = {
   footer: PropTypes.node,
   className: PropTypes.string,
 };
-
-

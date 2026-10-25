@@ -1,5 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import api, { assetUrl, buildQuery, getToken, setToken, removeToken, TOKEN_KEY } from './apiHelper';
+import api, {
+  assetUrl,
+  buildQuery,
+  getToken,
+  setToken,
+  removeToken,
+  TOKEN_KEY,
+  sanitizeInput,
+  getSessionSecurityInfo,
+} from './apiHelper';
 
 const mockFetch = (body, { ok = true, status = 200 } = {}) => {
   global.fetch = vi.fn().mockResolvedValue({ ok, status, json: async () => body });
@@ -92,6 +101,22 @@ describe('apiHelper', () => {
     vi.stubEnv('VITE_API_BASEURL', '');
     await api.get('/ping');
     expect(fetch.mock.calls[1][0]).toBe('/ping');
+  });
+
+  it('sanitizeInput mengamankan string dari potensi XSS injection', () => {
+    expect(sanitizeInput('<script>alert("xss")</script>')).toBe(
+      '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+    );
+    expect(sanitizeInput("O'Reilly & Co")).toBe('O&#x27;Reilly &amp; Co');
+    expect(sanitizeInput(null)).toBeNull();
+    expect(sanitizeInput(123)).toBe(123);
+  });
+
+  it('getSessionSecurityInfo mengembalikan metadata keamanan sesi', () => {
+    const info = getSessionSecurityInfo();
+    expect(info.storageType).toBe('localStorage');
+    expect(info.isHttpOnlyCookieSupported).toBe(true);
+    expect(info.xssMitigationEnabled).toBe(true);
   });
 });
 

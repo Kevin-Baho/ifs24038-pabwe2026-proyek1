@@ -6,6 +6,7 @@ import { asyncFetchUsers } from '../states/action';
 import Avatar from '../components/Avatar';
 import Input from '../../../components/common/Input';
 import Select from '../../../components/common/Select';
+import Card from '../../../components/common/Card';
 
 const ROLE_LABEL = { resident: 'Warga', coordinator: 'Koordinator', admin: 'Admin' };
 const FLOORS = [1, 2, 3, 4, 5];
@@ -54,14 +55,14 @@ export default function UsersPage() {
 
       <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {users.map((u) => (
-          <li key={u.id} className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-xs border border-slate-100 dark:border-slate-800 dark:bg-slate-900 transition-colors">
+          <Card as="li" key={u.id} className="flex items-center gap-3 p-4">
             <Avatar user={u} />
             <div className="min-w-0">
               <p className="truncate font-semibold text-slate-800 dark:text-slate-100">{u.name}</p>
               <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{u.nim} · {u.room_number} · Lt. {u.floor}</p>
               <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">{ROLE_LABEL[u.role] || u.role}</span>
             </div>
-          </li>
+          </Card>
         ))}
       </ul>
     </section>

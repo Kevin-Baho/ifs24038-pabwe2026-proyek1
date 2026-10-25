@@ -5,6 +5,8 @@ import { asyncDeleteDuty, asyncFetchDuties, asyncFetchDutyStats } from '../state
 import { formatDate, SHIFT_LABEL, STATUS_META, showConfirm } from '../../../helpers/toolsHelper';
 import AddDutyModal from '../modals/AddDutyModal';
 import Button from '../../../components/common/Button';
+import Card from '../../../components/common/Card';
+import Badge from '../../../components/common/Badge';
 
 export default function HomePage() {
   const dispatch = useDispatch();
@@ -155,9 +157,9 @@ export default function HomePage() {
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100">
               Manajemen Piket Asrama
             </h1>
-            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/70 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/40">
+            <Badge variant="primary" className="hidden sm:inline-flex">
               Roster Aktif
-            </span>
+            </Badge>
           </div>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             Kelola, laporkan bukti, dan pantau status verifikasi kebersihan asrama secara real-time.
@@ -180,12 +182,12 @@ export default function HomePage() {
       {/* Kartu Ringkasan Statistik */}
       <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-6">
         {/* Total Tugas */}
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs transition-all hover:shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <Card className="p-4 hover:shadow-sm">
           <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Tugas</p>
           <p className="mt-2 text-2xl font-bold tracking-tight text-slate-800 dark:text-slate-100">
             {dutyStats?.total ?? 0}
           </p>
-        </div>
+        </Card>
 
         {/* Selesai */}
         <div className="rounded-2xl border border-green-200/60 bg-gradient-to-b from-green-50/40 to-white p-4 shadow-xs transition-all hover:shadow-sm dark:border-green-900/40 dark:from-green-950/20 dark:to-slate-900">
@@ -229,7 +231,7 @@ export default function HomePage() {
       </div>
 
       {/* Kontrol Tab & Filter */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 md:p-5 shadow-xs transition-colors dark:border-slate-800 dark:bg-slate-900 space-y-4">
+      <Card className="p-4 md:p-5 space-y-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
           {/* Tab Filter */}
           <div className="flex flex-wrap gap-2">
@@ -314,7 +316,7 @@ export default function HomePage() {
 
         {/* Tabel Roster Jadwal Piket */}
         {renderDutiesContent()}
-      </div>
+      </Card>
 
       {/* Modal Tambah Jadwal */}
       <AddDutyModal
