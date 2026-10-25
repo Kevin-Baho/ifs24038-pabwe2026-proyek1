@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useInput from '../../../hooks/useInput';
+import useDebounce from '../../../hooks/useDebounce';
 import { asyncFetchUsers } from '../states/action';
 import Avatar from '../components/Avatar';
 
@@ -12,10 +13,11 @@ export default function UsersPage() {
   const { users, isLoading } = useSelector((state) => state.users);
   const [floor, onFloorChange] = useInput('');
   const [search, onSearchChange] = useInput('');
+  const debouncedSearch = useDebounce(search, 300);
 
   useEffect(() => {
-    dispatch(asyncFetchUsers({ floor, search }));
-  }, [dispatch, floor, search]);
+    dispatch(asyncFetchUsers({ floor, search: debouncedSearch }));
+  }, [dispatch, floor, debouncedSearch]);
 
   return (
     <section className="space-y-4">

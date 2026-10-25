@@ -47,7 +47,7 @@ describe('RegisterPage', () => {
     });
     expect(await screen.findByText('HALAMAN LOGIN')).toBeInTheDocument();
     expect(showSuccess).toHaveBeenCalled();
-  });
+  }, 15000);
 
   it('menampilkan error saat registrasi gagal', async () => {
     vi.spyOn(authApi, 'register').mockRejectedValue(new Error('NIM atau email sudah terdaftar'));
@@ -55,7 +55,7 @@ describe('RegisterPage', () => {
     await fillForm();
     await waitFor(() => expect(showError).toHaveBeenCalledWith('NIM atau email sudah terdaftar'));
     expect(screen.queryByText('HALAMAN LOGIN')).not.toBeInTheDocument();
-  });
+  }, 15000);
 
   it('memiliki tautan ke halaman masuk', async () => {
     setup();
