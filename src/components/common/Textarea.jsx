@@ -27,6 +27,7 @@ export default function Textarea({
   required = false,
   disabled = false,
   className = '',
+  'aria-label': ariaLabel,
   ...props
 }) {
   const borderClass = error
@@ -52,7 +53,7 @@ export default function Textarea({
         placeholder={placeholder}
         required={required}
         disabled={disabled}
-        aria-label={props['aria-label'] || label}
+        aria-label={ariaLabel || label}
         className={`w-full rounded-xl border bg-white px-3.5 py-2 text-sm text-slate-800 transition-colors focus:outline-none dark:bg-slate-800 dark:text-slate-100 disabled:opacity-50 disabled:bg-slate-100 dark:disabled:bg-slate-900 ${borderClass} ${className}`}
         {...props}
       />
@@ -73,4 +74,5 @@ Textarea.propTypes = {
   required: PropTypes.bool,
   disabled: PropTypes.bool,
   className: PropTypes.string,
+  'aria-label': PropTypes.string,
 };

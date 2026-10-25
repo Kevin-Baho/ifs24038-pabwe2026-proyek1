@@ -19,6 +19,7 @@ export default function Select({
   children,
   className = '',
   disabled = false,
+  'aria-label': ariaLabel,
   ...props
 }) {
   return (
@@ -36,7 +37,7 @@ export default function Select({
         value={value}
         onChange={onChange}
         disabled={disabled}
-        aria-label={props['aria-label'] || label}
+        aria-label={ariaLabel || label}
         className={`w-full rounded-xl border border-slate-300/80 bg-white px-3 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 disabled:opacity-50 transition-colors ${className}`}
         {...props}
       >
@@ -54,5 +55,6 @@ Select.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   disabled: PropTypes.bool,
+  'aria-label': PropTypes.string,
 };
 
