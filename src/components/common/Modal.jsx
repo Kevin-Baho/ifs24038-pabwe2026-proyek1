@@ -33,13 +33,10 @@ export default function Modal({
   if (!isOpen) return null;
 
   return (
-    <div
-      role="dialog"
+    <dialog
+      open
       aria-modal="true"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose?.();
-      }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 m-0 flex h-full w-full max-h-none max-w-none items-center justify-center border-0 bg-transparent p-4"
     >
       <button
         type="button"
@@ -73,7 +70,7 @@ export default function Modal({
           </div>
         )}
       </div>
-    </div>
+    </dialog>
   );
 }
 

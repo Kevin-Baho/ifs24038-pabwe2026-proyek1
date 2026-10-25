@@ -108,7 +108,7 @@ describe('VerifyModal', () => {
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(handleClose).toHaveBeenCalledTimes(3);
 
-    fireEvent.click(screen.getByRole('dialog'));
+    fireEvent.click(screen.getByLabelText('Tutup'));
     expect(handleClose).toHaveBeenCalledTimes(4);
   });
 });

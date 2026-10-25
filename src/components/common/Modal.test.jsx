@@ -53,7 +53,7 @@ describe('Modal component', () => {
       </Modal>
     );
 
-    fireEvent.click(screen.getByRole('dialog'));
+    fireEvent.click(screen.getByLabelText('Tutup'));
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
 
