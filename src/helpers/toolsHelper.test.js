@@ -1,6 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Swal from 'sweetalert2';
-import { showSuccess, showError, showConfirm, formatDate, STATUS_META } from './toolsHelper';
+import {
+  showSuccess,
+  showError,
+  showConfirm,
+  formatDate,
+  STATUS_META,
+  generateTemporaryId,
+} from './toolsHelper';
 
 vi.mock('sweetalert2', () => ({ default: { fire: vi.fn() } }));
 
@@ -39,4 +46,11 @@ describe('toolsHelper', () => {
   it('STATUS_META memuat 4 status', () => {
     expect(Object.keys(STATUS_META)).toEqual(['pending', 'submitted', 'approved', 'rejected']);
   });
+
+  it('generateTemporaryId menghasilkan string ID dengan prefix temp_', () => {
+    const id = generateTemporaryId();
+    expect(typeof id).toBe('string');
+    expect(id.startsWith('temp_')).toBe(true);
+  });
 });
+

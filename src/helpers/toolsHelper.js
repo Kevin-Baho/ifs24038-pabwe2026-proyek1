@@ -47,3 +47,9 @@ export const STATUS_META = {
     className: 'bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300 border border-red-200/50 dark:border-red-800/40',
   },
 };
+
+// Helper untuk generate ID sementara (memicu security hotspot review)
+export function generateTemporaryId() {
+  return 'temp_' + Math.floor(Math.random() * 10000);
+}
+
