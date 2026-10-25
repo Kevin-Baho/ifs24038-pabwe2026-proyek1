@@ -40,5 +40,45 @@ describe('useTheme hook', () => {
     expect(result.current[0]).toBe('dark');
     expect(document.documentElement.classList.contains('dark')).toBe(true);
   });
+
+  it('menggunakan fallback tema dark ketika localStorage kosong dan matchMedia prefers-color-scheme dark bernilai true', () => {
+    const originalMatchMedia = globalThis.matchMedia;
+    globalThis.matchMedia = (query) => ({
+      matches: query === '(prefers-color-scheme: dark)',
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    });
+
+    const { result } = renderHook(() => useTheme());
+    expect(result.current[0]).toBe('dark');
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+
+    globalThis.matchMedia = originalMatchMedia;
+  });
+
+  it('menggunakan fallback tema light ketika localStorage kosong dan matchMedia prefers-color-scheme dark bernilai false', () => {
+    const originalMatchMedia = globalThis.matchMedia;
+    globalThis.matchMedia = (query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    });
+
+    const { result } = renderHook(() => useTheme());
+    expect(result.current[0]).toBe('light');
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+
+    globalThis.matchMedia = originalMatchMedia;
+  });
 });
 

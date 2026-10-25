@@ -11,6 +11,7 @@ vi.mock('../../../helpers/toolsHelper', () => ({ showError: vi.fn(), showSuccess
 const people = [
   { id: 1, name: 'Budi Santoso', nim: '210001', room_number: 'Kamar 204', floor: 2, role: 'resident' },
   { id: 2, name: 'Rina Koordinator', nim: '000002', room_number: 'Kamar 201', floor: 2, role: 'coordinator' },
+  { id: 3, name: 'Tamu Asrama', nim: '999999', room_number: 'Kamar 999', floor: 1, role: 'guest' },
 ];
 const setup = () => renderWithProviders(<UsersPage />, { reducer: { users: usersReducer } });
 
@@ -26,6 +27,7 @@ describe('UsersPage', () => {
     expect(await screen.findByText('Budi Santoso')).toBeInTheDocument();
     expect(screen.getByText('Rina Koordinator')).toBeInTheDocument();
     expect(screen.getByText('Koordinator')).toBeInTheDocument();
+    expect(screen.getByText('guest')).toBeInTheDocument();
     expect(userApi.list).toHaveBeenCalledWith({ floor: '', search: '' });
   });
 

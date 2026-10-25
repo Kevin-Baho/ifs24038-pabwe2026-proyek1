@@ -103,5 +103,40 @@ describe('AddDutyModal', () => {
     fireEvent.click(screen.getByLabelText('Tutup'));
     expect(handleClose).toHaveBeenCalledTimes(4);
   });
+
+  it('merender fallback strip saat user tidak memiliki nim dan room_number', async () => {
+    vi.spyOn(userApi, 'list').mockResolvedValue([{ id: 2, name: 'Siti Tanpa Data', nim: null, room_number: null }]);
+    renderWithProviders(<AddDutyModal isOpen={true} onClose={vi.fn()} />, {
+      reducer: { duties: dutiesReducer, users: usersReducer },
+    });
+
+    expect(await screen.findByText(/Siti Tanpa Data \(NIM: -, Kamar: -\)/)).toBeInTheDocument();
+  });
+
+  it('tidak memanggil onClose atau onSuccess jika API create gagal', async () => {
+    const handleClose = vi.fn();
+    const handleSuccess = vi.fn();
+    vi.spyOn(dutyApi, 'create').mockRejectedValue(new Error('Gagal simpan'));
+
+    renderWithProviders(
+      <AddDutyModal isOpen={true} onClose={handleClose} onSuccess={handleSuccess} />,
+      {
+        reducer: { duties: dutiesReducer, users: usersReducer },
+        preloadedState: {
+          users: { users, me: null, isLoading: false },
+          duties: { zones, duties: [], duty: null, dutyStats: null, isLoading: false },
+        },
+      }
+    );
+
+    await userEvent.selectOptions(screen.getByLabelText('Petugas Asrama'), '1');
+    await userEvent.selectOptions(screen.getByLabelText('Zona Piket'), '10');
+    fireEvent.change(screen.getByLabelText('Tanggal Pelaksanaan'), { target: { value: '2026-10-30' } });
+    await userEvent.click(screen.getByRole('button', { name: 'Jadwalkan' }));
+
+    expect(handleSuccess).not.toHaveBeenCalled();
+    expect(handleClose).not.toHaveBeenCalled();
+  });
 });
+
 

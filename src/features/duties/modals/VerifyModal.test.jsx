@@ -111,5 +111,48 @@ describe('VerifyModal', () => {
     fireEvent.click(screen.getByLabelText('Tutup'));
     expect(handleClose).toHaveBeenCalledTimes(4);
   });
+
+  it('validasi error ketika status diubah ke Ditolak (rejected) dan catatan hanya berisi spasi', async () => {
+    renderWithProviders(
+      <VerifyModal
+        isOpen={true}
+        dutyId={1}
+        initialStatus="approved"
+        onClose={vi.fn()}
+      />,
+      { reducer: { duties: dutiesReducer } }
+    );
+
+    await userEvent.click(screen.getByLabelText(/Tolak \(Reject\)/i));
+    await userEvent.type(screen.getByLabelText(/Catatan Evaluasi/i), '   ');
+    await userEvent.click(screen.getByRole('button', { name: 'Konfirmasi Tolak' }));
+    expect(showError).toHaveBeenCalledWith('Catatan alasan wajib diisi saat menolak');
+
+    // Beralih kembali ke Setujui (Approve)
+    await userEvent.click(screen.getByLabelText(/Setujui \(Approve\)/i));
+    expect(screen.getByRole('button', { name: 'Konfirmasi Setujui' })).toBeInTheDocument();
+  });
+
+  it('tidak memanggil onSuccess dan onClose ketika API verifikasi gagal', async () => {
+    const handleClose = vi.fn();
+    const handleSuccess = vi.fn();
+    vi.spyOn(dutyApi, 'verify').mockRejectedValue(new Error('Gagal verifikasi'));
+
+    renderWithProviders(
+      <VerifyModal
+        isOpen={true}
+        dutyId={1}
+        initialStatus="approved"
+        onClose={handleClose}
+        onSuccess={handleSuccess}
+      />,
+      { reducer: { duties: dutiesReducer } }
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: 'Konfirmasi Setujui' }));
+    expect(handleSuccess).not.toHaveBeenCalled();
+    expect(handleClose).not.toHaveBeenCalled();
+  });
 });
+
 

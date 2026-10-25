@@ -160,12 +160,67 @@ describe('HomePage', () => {
     expect(dutyApi.remove).toHaveBeenCalledWith(1);
   });
 
-  it('membuka modal tambah piket saat tombol diklik oleh admin', async () => {
+  it('tidak memanggil loadData saat penghapusan tugas gagal di API', async () => {
+    vi.spyOn(dutyApi, 'remove').mockRejectedValue(new Error('Gagal hapus'));
+    showConfirm.mockResolvedValueOnce(true);
+
+    renderComponent('admin');
+    await screen.findByText('Budi Santoso');
+
+    const deleteButtons = screen.getAllByRole('button', { name: 'Hapus' });
+    await userEvent.click(deleteButtons[0]);
+    expect(dutyApi.remove).toHaveBeenCalledWith(1);
+  });
+
+  it('membuka modal tambah piket saat tombol diklik oleh admin dan dapat ditutup', async () => {
     renderComponent('admin');
 
     const addBtn = screen.getByRole('button', { name: '+ Jadwalkan Piket' });
     await userEvent.click(addBtn);
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByText('Jadwalkan Piket Baru')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: 'Batal' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('menampilkan pesan/state kosong saat daftar tugas piket bernilai array kosong []', async () => {
+    vi.spyOn(dutyApi, 'list').mockResolvedValue([]);
+    renderComponent('resident');
+
+    expect(await screen.findByText('Belum ada jadwal piket yang sesuai.')).toBeInTheDocument();
+    expect(screen.getByText('Coba sesuaikan tab atau filter lantai dan tanggal di atas.')).toBeInTheDocument();
+  });
+
+  it('menampilkan pesan kosong ketika filter per lantai tidak menghasilkan data', async () => {
+    vi.spyOn(dutyApi, 'list').mockResolvedValue([]);
+    renderComponent('resident');
+
+    await userEvent.selectOptions(screen.getByLabelText('Lantai:'), '4');
+    expect(dutyApi.list).toHaveBeenCalledWith(expect.objectContaining({ floor: '4' }));
+    expect(await screen.findByText('Belum ada jadwal piket yang sesuai.')).toBeInTheDocument();
+  });
+
+  it('merender tugas dengan status atau shift khusus yang tidak ada di daftar meta', async () => {
+    vi.spyOn(dutyApi, 'list').mockResolvedValue([
+      {
+        id: 99,
+        user_name: 'Anto Kustom',
+        user_nim: null,
+        user_room: null,
+        zone_name: 'Gudang',
+        floor: 1,
+        scheduled_date: '2026-10-28',
+        shift: 'malam',
+        status: 'custom_status',
+      },
+    ]);
+    renderComponent('resident');
+
+    expect(await screen.findByText('Anto Kustom')).toBeInTheDocument();
+    expect(screen.getByText('malam')).toBeInTheDocument();
+    expect(screen.getByText('custom_status')).toBeInTheDocument();
   });
 });
+
+

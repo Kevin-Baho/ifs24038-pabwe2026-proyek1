@@ -82,4 +82,63 @@ describe('ProfilePage', () => {
     await waitFor(() => expect(spy).toHaveBeenCalledWith({ old_password: 'lama123', new_password: 'baru1234' }));
     await waitFor(() => expect(screen.getByLabelText('Kata Sandi Lama')).toHaveValue(''));
   });
+
+  it('menampilkan fallback inisial avatar ketika user.avatar_url bernilai null atau kosong', async () => {
+    vi.spyOn(userApi, 'getMe').mockResolvedValue({
+      ...me,
+      avatar_url: null,
+      name: 'Budi Santoso',
+    });
+    setup();
+
+    expect(await screen.findByLabelText('Inisial Budi Santoso')).toBeInTheDocument();
+    expect(screen.getByText('BS')).toBeInTheDocument();
+  });
+
+  it('mengisi form dengan string kosong jika bio, room_number, dan floor bernilai null', async () => {
+    vi.spyOn(userApi, 'getMe').mockResolvedValue({
+      ...me,
+      bio: null,
+      room_number: null,
+      floor: null,
+    });
+    setup();
+
+    await screen.findByText('Budi Santoso');
+    await waitFor(() => {
+      expect(screen.getByLabelText('Bio')).toHaveValue('');
+      expect(screen.getByLabelText('Nomor Kamar')).toHaveValue('');
+      expect(screen.getByLabelText('Lantai')).toHaveValue(null);
+    });
+  });
+
+  it('tidak mereset file foto atau form password saat API gagal', async () => {
+    vi.spyOn(userApi, 'uploadPhoto').mockRejectedValue(new Error('Upload gagal'));
+    vi.spyOn(userApi, 'changePassword').mockRejectedValue(new Error('Ganti sandi gagal'));
+    setup();
+
+    await screen.findByText('Budi Santoso');
+    const file = new File(['fail'], 'fail.png', { type: 'image/png' });
+    await userEvent.upload(screen.getByLabelText(/Pilih Foto/), file);
+    await userEvent.click(screen.getByRole('button', { name: 'Unggah Foto' }));
+
+    await userEvent.type(screen.getByLabelText('Kata Sandi Lama'), 'lama123');
+    await userEvent.type(screen.getByLabelText('Kata Sandi Baru'), 'baru1234');
+    await userEvent.type(screen.getByLabelText('Konfirmasi Kata Sandi Baru'), 'baru1234');
+    await userEvent.click(screen.getByRole('button', { name: 'Ubah Kata Sandi' }));
+
+    expect(screen.getByLabelText('Kata Sandi Lama')).toHaveValue('lama123');
+  });
+
+  it('mengosongkan state file ketika pemilihan file dibatalkan', async () => {
+    const { fireEvent } = await import('@testing-library/react');
+    setup();
+    await screen.findByText('Budi Santoso');
+    const input = screen.getByLabelText(/Pilih Foto/);
+    fireEvent.change(input, { target: { files: [] } });
+    await userEvent.click(screen.getByRole('button', { name: 'Unggah Foto' }));
+    expect(showError).toHaveBeenCalledWith('Pilih foto terlebih dahulu');
+  });
 });
+
+

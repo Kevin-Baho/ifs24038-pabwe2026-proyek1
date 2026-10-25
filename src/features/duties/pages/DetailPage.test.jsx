@@ -198,4 +198,56 @@ describe('DetailPage', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Batal' }));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
+
+  it('menampilkan tombol aksi dan catatan penolakan ketika tugas berstatus rejected', async () => {
+    renderComponent(
+      { id: 1, role: 'resident' },
+      { ...baseDuty, status: 'rejected', note: 'Kamar mandi belum disikat' }
+    );
+
+    expect(await screen.findByText('Tugas Piket Ditolak')).toBeInTheDocument();
+    expect(screen.getByText(/Kamar mandi belum disikat/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Unggah Bukti Selesai' })).toBeInTheDocument();
+  });
+
+  it('memanggil reloadDuty saat modal bukti atau verifikasi memanggil onSuccess', async () => {
+    const spyGet = vi.spyOn(dutyApi, 'get').mockResolvedValue({ ...baseDuty, status: 'pending' });
+    vi.spyOn(dutyApi, 'uploadProof').mockResolvedValue({ ...baseDuty, status: 'submitted' });
+
+    renderComponent({ id: 1, role: 'resident' }, { ...baseDuty, status: 'pending' });
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Unggah Bukti Selesai' }));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    const input = screen.getByLabelText(/Foto Bukti/i);
+    const validFile = new File(['proof'], 'proof.jpg', { type: 'image/jpeg' });
+    const { fireEvent } = await import('@testing-library/react');
+    fireEvent.change(input, { target: { files: [validFile] } });
+
+    await userEvent.click(screen.getByRole('button', { name: 'Unggah Bukti' }));
+    expect(spyGet).toHaveBeenCalled();
+  });
+
+  it('menampilkan teks default ketika status rejected tanpa catatan spesifik', async () => {
+    renderComponent(
+      { id: 1, role: 'resident' },
+      { ...baseDuty, status: 'rejected', note: null }
+    );
+
+    expect(await screen.findByText('Tugas Piket Ditolak')).toBeInTheDocument();
+    expect(screen.getByText(/Tidak ada catatan penolakan spesifik\./)).toBeInTheDocument();
+  });
+
+  it('merender tugas dengan status atau shift tidak dikenal pada DetailPage', async () => {
+    renderComponent(
+      { id: 1, role: 'resident' },
+      { ...baseDuty, status: 'custom_status', shift: 'malam', user_nim: null, user_room: null }
+    );
+
+    expect(await screen.findByRole('heading', { name: 'Detail Jadwal Piket' })).toBeInTheDocument();
+    expect(screen.getByText('custom_status')).toBeInTheDocument();
+    expect(screen.getByText('malam')).toBeInTheDocument();
+  });
 });
+
+

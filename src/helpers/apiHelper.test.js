@@ -82,4 +82,16 @@ describe('apiHelper', () => {
     global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500, json: async () => { throw new Error('x'); } });
     await expect(api.get('/x')).rejects.toMatchObject({ message: 'Permintaan gagal (500)', status: 500 });
   });
+
+  it('baseUrl bekerja ketika VITE_API_BASEURL kosong atau memiliki trailing slash', async () => {
+    vi.stubEnv('VITE_API_BASEURL', 'http://api.test/api/v1/');
+    mockFetch({ success: true });
+    await api.get('/ping');
+    expect(fetch.mock.calls[0][0]).toBe('http://api.test/api/v1/ping');
+
+    vi.stubEnv('VITE_API_BASEURL', '');
+    await api.get('/ping');
+    expect(fetch.mock.calls[1][0]).toBe('/ping');
+  });
 });
+

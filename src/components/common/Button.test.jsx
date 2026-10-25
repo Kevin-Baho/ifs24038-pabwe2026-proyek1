@@ -43,5 +43,30 @@ describe('Button component', () => {
     rerender(<Button variant="ghost">Lewati</Button>);
     expect(screen.getByRole('button')).toHaveClass('hover:bg-slate-100');
   });
+
+  it('mendukung varian danger, secondary, ghost secara terpisah', () => {
+    const { unmount } = render(<Button variant="danger">Bahaya</Button>);
+    expect(screen.getByRole('button', { name: 'Bahaya' })).toHaveClass('bg-red-600');
+    unmount();
+
+    render(<Button variant="secondary">Batal</Button>);
+    expect(screen.getByRole('button', { name: 'Batal' })).toHaveClass('border-slate-300');
+
+    render(<Button variant="ghost">Hantu</Button>);
+    expect(screen.getByRole('button', { name: 'Hantu' })).toHaveClass('hover:bg-slate-100');
+  });
+
+  it('menggunakan fallback varian primary ketika variant tidak dikenal', () => {
+    render(<Button variant="custom-invalid">Default</Button>);
+    expect(screen.getByRole('button', { name: 'Default' })).toHaveClass('from-indigo-600');
+  });
+
+  it('tetap merender children jika isLoading true tanpa loadingText', () => {
+    render(<Button isLoading>Teks Asli</Button>);
+    expect(screen.getByRole('button')).toBeDisabled();
+    expect(screen.getByTestId('button-spinner')).toBeInTheDocument();
+    expect(screen.getByText('Teks Asli')).toBeInTheDocument();
+  });
 });
+
 
