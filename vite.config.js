@@ -14,8 +14,15 @@ export default defineConfig(({ mode }) => {
       setupFiles: './src/setupTests.js',
       coverage: {
         provider: 'v8',
+        reporter: ['text', 'json', 'html', 'lcov'], // <-- INI KUNCINYA (Membuat file lcov.info)
         include: ['src/**/*.{js,jsx}'],
-        exclude: ['src/main.jsx', 'src/**/*.test.{js,jsx}'],
+        exclude: [
+          'src/main.jsx',
+          'src/setupTests.js',
+          'src/test-utils.jsx',
+          'src/**/*.test.{js,jsx}',
+          'node_modules/**',
+        ],
       },
     },
   };

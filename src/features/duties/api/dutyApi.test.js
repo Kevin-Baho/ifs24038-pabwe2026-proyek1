@@ -42,15 +42,15 @@ describe('dutyApi', () => {
 
     // Dengan note
     expect(await dutyApi.uploadProof(1, file, 'sudah bersih')).toEqual({ id: 1, status: 'submitted' });
-    let [path, formData] = spy.mock.calls[0];
+    const [path, formDataWithNote] = spy.mock.calls[0];
     expect(path).toBe('/duties/1/proof');
-    expect(formData.get('proof')).toBe(file);
-    expect(formData.get('note')).toBe('sudah bersih');
+    expect(formDataWithNote.get('proof')).toBe(file);
+    expect(formDataWithNote.get('note')).toBe('sudah bersih');
 
     // Tanpa note
     await dutyApi.uploadProof(1, file);
-    [, formData] = spy.mock.calls[1];
-    expect(formData.get('note')).toBeNull();
+    const [, formDataWithoutNote] = spy.mock.calls[1];
+    expect(formDataWithoutNote.get('note')).toBeNull();
   });
 
   it('verify memanggil PUT /duties/:id/verify', async () => {

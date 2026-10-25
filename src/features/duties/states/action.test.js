@@ -174,8 +174,8 @@ describe('duties actions', () => {
     const approvedDuty = { id: 1, status: 'approved' };
 
     vi.spyOn(dutyApi, 'verify').mockResolvedValueOnce(approvedDuty);
-    let success = await asyncVerifyDuty(1, { status: 'approved' })(dispatch);
-    expect(success).toBe(true);
+    const approvedSuccess = await asyncVerifyDuty(1, { status: 'approved' })(dispatch);
+    expect(approvedSuccess).toBe(true);
     expect(dutyApi.verify).toHaveBeenCalledWith(1, { status: 'approved' });
     expect(dispatch).toHaveBeenCalledWith(setDutyActionCreator(approvedDuty));
     expect(dispatch).toHaveBeenCalledWith(setIsDutyVerifiedActionCreator(true));
@@ -183,8 +183,8 @@ describe('duties actions', () => {
 
     const rejectedDuty = { id: 1, status: 'rejected' };
     vi.spyOn(dutyApi, 'verify').mockResolvedValueOnce(rejectedDuty);
-    success = await asyncVerifyDuty(1, { status: 'rejected', note: 'kurang bersih' })(dispatch);
-    expect(success).toBe(true);
+    const rejectedSuccess = await asyncVerifyDuty(1, { status: 'rejected', note: 'kurang bersih' })(dispatch);
+    expect(rejectedSuccess).toBe(true);
     expect(showSuccess).toHaveBeenCalledWith('Tugas ditolak');
 
     vi.spyOn(dutyApi, 'verify').mockRejectedValueOnce(new Error('Catatan wajib diisi'));
