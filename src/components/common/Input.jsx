@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 /**
  * Komponen Input form reusable dengan label semantik dan tampilan error.
  * @param {Object} props
@@ -57,4 +59,19 @@ export default function Input({
     </div>
   );
 }
+
+Input.propTypes = {
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string,
+  label: PropTypes.string,
+  type: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+  error: PropTypes.string,
+  required: PropTypes.bool,
+  disabled: PropTypes.bool,
+  className: PropTypes.string,
+};
+
 

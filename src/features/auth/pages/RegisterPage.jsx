@@ -20,8 +20,10 @@ export default function RegisterPage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const ok = await dispatch(
-      asyncRegister({ nim, name, email, password, room_number: roomNumber, floor: Number(floor) })
+    const ok = await Promise.resolve(
+      dispatch(
+        asyncRegister({ nim, name, email, password, room_number: roomNumber, floor: Number(floor) })
+      )
     );
     if (ok) navigate('/auth/login', { replace: true });
   };

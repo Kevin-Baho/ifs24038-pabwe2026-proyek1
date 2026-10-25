@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const VARIANTS = {
   primary:
     'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/20 hover:from-indigo-700 hover:to-indigo-800',
@@ -69,4 +71,16 @@ export default function Button({
     </button>
   );
 }
+
+Button.propTypes = {
+  children: PropTypes.node,
+  variant: PropTypes.string,
+  isLoading: PropTypes.bool,
+  loadingText: PropTypes.string,
+  disabled: PropTypes.bool,
+  type: PropTypes.string,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+};
+
 

@@ -6,7 +6,7 @@ export function useTheme() {
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem(THEME_KEY);
     if (saved === 'dark' || saved === 'light') return saved;
-    if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
+    if (typeof globalThis !== 'undefined' && globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches) {
       return 'dark';
     }
     return 'light';

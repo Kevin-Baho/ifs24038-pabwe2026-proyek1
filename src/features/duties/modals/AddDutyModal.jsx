@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { asyncFetchUsers } from '../../users/states/action';
 import { asyncAddDuty, asyncFetchZones } from '../states/action';
 import { showError } from '../../../helpers/toolsHelper';
@@ -48,13 +49,15 @@ export default function AddDutyModal({ isOpen, onClose, onSuccess }) {
     }
 
     setIsSubmitting(true);
-    const success = await dispatch(
-      asyncAddDuty({
-        user_id: Number(userId),
-        zone_id: Number(zoneId),
-        scheduled_date: scheduledDate,
-        shift,
-      })
+    const success = await Promise.resolve(
+      dispatch(
+        asyncAddDuty({
+          user_id: Number(userId),
+          zone_id: Number(zoneId),
+          scheduled_date: scheduledDate,
+          shift,
+        })
+      )
     );
     setIsSubmitting(false);
 
@@ -141,3 +144,10 @@ export default function AddDutyModal({ isOpen, onClose, onSuccess }) {
     </Modal>
   );
 }
+
+AddDutyModal.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  onSuccess: PropTypes.func,
+};
+

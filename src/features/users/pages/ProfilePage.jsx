@@ -46,14 +46,16 @@ export default function ProfilePage() {
   const onUpload = async (e) => {
     e.preventDefault();
     if (!file) return showError('Pilih foto terlebih dahulu');
-    const ok = await dispatch(asyncUploadPhoto(file));
+    const ok = await Promise.resolve(dispatch(asyncUploadPhoto(file)));
     if (ok) setFile(null);
   };
 
   const onChangePassword = async (e) => {
     e.preventDefault();
     if (newPassword !== confirm) return showError('Konfirmasi kata sandi tidak cocok');
-    const ok = await dispatch(asyncChangePassword({ old_password: oldPassword, new_password: newPassword }));
+    const ok = await Promise.resolve(
+      dispatch(asyncChangePassword({ old_password: oldPassword, new_password: newPassword }))
+    );
     if (ok) {
       resetOld();
       resetNew();

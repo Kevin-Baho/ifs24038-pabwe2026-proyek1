@@ -15,7 +15,7 @@ export default function LoginPage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const ok = await dispatch(asyncLogin({ identifier, password }));
+    const ok = await Promise.resolve(dispatch(asyncLogin({ identifier, password })));
     if (ok) navigate('/', { replace: true });
   };
 

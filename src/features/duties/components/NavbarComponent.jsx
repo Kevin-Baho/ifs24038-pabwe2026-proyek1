@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { asyncLogout } from '../../auth/states/action';
 import Avatar from '../../users/components/Avatar';
 import useTheme from '../../../hooks/useTheme';
@@ -83,3 +84,8 @@ export default function NavbarComponent({ onToggleSidebar }) {
     </header>
   );
 }
+
+NavbarComponent.propTypes = {
+  onToggleSidebar: PropTypes.func,
+};
+

@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const navLinkClass = ({ isActive }) =>
   `flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all ${
@@ -11,9 +12,12 @@ export default function SidebarComponent({ isOpen = false, onClose }) {
   return (
     <>
       {isOpen && (
-        <div
+        <button
+          type="button"
+          aria-label="Tutup"
           data-testid="sidebar-backdrop"
           onClick={onClose}
+          tabIndex={-1}
           className="fixed inset-0 z-30 bg-slate-900/60 backdrop-blur-xs md:hidden transition-opacity"
         />
       )}
@@ -67,3 +71,9 @@ export default function SidebarComponent({ isOpen = false, onClose }) {
     </>
   );
 }
+
+SidebarComponent.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+};
+

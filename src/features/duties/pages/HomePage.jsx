@@ -45,11 +45,104 @@ export default function HomePage() {
     });
 
     if (confirmed) {
-      const success = await dispatch(asyncDeleteDuty(duty.id));
+      const success = await Promise.resolve(dispatch(asyncDeleteDuty(duty.id)));
       if (success) {
         loadData();
       }
     }
+  };
+
+  const renderDutiesContent = () => {
+    if (isLoading) {
+      return (
+        <div className="py-16 text-center text-sm text-slate-500 dark:text-slate-400">
+          <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent mb-2"></div>
+          <p>Memuat daftar jadwal piket...</p>
+        </div>
+      );
+    }
+
+    if (duties.length === 0) {
+      return (
+        <div className="py-16 text-center text-sm text-slate-500 dark:text-slate-400">
+          <p className="font-medium text-slate-700 dark:text-slate-300">Belum ada jadwal piket yang sesuai.</p>
+          <p className="text-xs mt-1">Coba sesuaikan tab atau filter lantai dan tanggal di atas.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+          <thead className="border-b border-slate-200/80 bg-slate-50/75 text-xs font-semibold uppercase text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
+            <tr>
+              <th scope="col" className="px-4 py-3">Tanggal</th>
+              <th scope="col" className="px-4 py-3">Shift</th>
+              <th scope="col" className="px-4 py-3">Zona</th>
+              <th scope="col" className="px-4 py-3">Petugas</th>
+              <th scope="col" className="px-4 py-3">Status</th>
+              <th scope="col" className="px-4 py-3 text-right">Aksi</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+            {duties.map((duty) => {
+              const meta = STATUS_META[duty.status] || {
+                label: duty.status,
+                className: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300',
+              };
+              return (
+                <tr key={duty.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                  <td className="whitespace-nowrap px-4 py-3 font-semibold text-slate-800 dark:text-slate-200">
+                    {formatDate(duty.scheduled_date)}
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3">
+                    <span className="inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                      {SHIFT_LABEL[duty.shift] || duty.shift}
+                    </span>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3">
+                    <div className="font-medium text-slate-800 dark:text-slate-200">{duty.zone_name}</div>
+                    <div className="text-xs text-slate-600 dark:text-slate-300 font-medium">Lantai {duty.floor}</div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3">
+                    <div className="font-medium text-slate-800 dark:text-slate-200">{duty.user_name}</div>
+                    <div className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                      NIM: {duty.user_nim || '-'} • Kamar: {duty.user_room || '-'}
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3">
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${meta.className}`}
+                    >
+                      {meta.label}
+                    </span>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <Link
+                        to={`/duties/${duty.id}`}
+                        className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-indigo-600 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-indigo-400 transition-colors"
+                      >
+                        Detail
+                      </Link>
+                      {canManage && (
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(duty)}
+                          className="rounded-lg border border-red-200 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-red-900/60 dark:text-red-400 dark:hover:bg-red-950/40 transition-colors"
+                        >
+                          Hapus
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
   };
 
   return (
@@ -219,88 +312,7 @@ export default function HomePage() {
         </div>
 
         {/* Tabel Roster Jadwal Piket */}
-        {isLoading ? (
-          <div className="py-16 text-center text-sm text-slate-500 dark:text-slate-400">
-            <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent mb-2"></div>
-            <p>Memuat daftar jadwal piket...</p>
-          </div>
-        ) : duties.length === 0 ? (
-          <div className="py-16 text-center text-sm text-slate-500 dark:text-slate-400">
-            <p className="font-medium text-slate-700 dark:text-slate-300">Belum ada jadwal piket yang sesuai.</p>
-            <p className="text-xs mt-1">Coba sesuaikan tab atau filter lantai dan tanggal di atas.</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
-              <thead className="border-b border-slate-200/80 bg-slate-50/75 text-xs font-semibold uppercase text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
-                <tr>
-                  <th scope="col" className="px-4 py-3">Tanggal</th>
-                  <th scope="col" className="px-4 py-3">Shift</th>
-                  <th scope="col" className="px-4 py-3">Zona</th>
-                  <th scope="col" className="px-4 py-3">Petugas</th>
-                  <th scope="col" className="px-4 py-3">Status</th>
-                  <th scope="col" className="px-4 py-3 text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                {duties.map((duty) => {
-                  const meta = STATUS_META[duty.status] || {
-                    label: duty.status,
-                    className: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300',
-                  };
-                  return (
-                    <tr key={duty.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
-                      <td className="whitespace-nowrap px-4 py-3 font-semibold text-slate-800 dark:text-slate-200">
-                        {formatDate(duty.scheduled_date)}
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3">
-                        <span className="inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                          {SHIFT_LABEL[duty.shift] || duty.shift}
-                        </span>
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3">
-                        <div className="font-medium text-slate-800 dark:text-slate-200">{duty.zone_name}</div>
-                        <div className="text-xs text-slate-600 dark:text-slate-300 font-medium">Lantai {duty.floor}</div>
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3">
-                        <div className="font-medium text-slate-800 dark:text-slate-200">{duty.user_name}</div>
-                        <div className="text-xs text-slate-600 dark:text-slate-300 font-medium">
-                          NIM: {duty.user_nim || '-'} • Kamar: {duty.user_room || '-'}
-                        </div>
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${meta.className}`}
-                        >
-                          {meta.label}
-                        </span>
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Link
-                            to={`/duties/${duty.id}`}
-                            className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-indigo-600 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-indigo-400 transition-colors"
-                          >
-                            Detail
-                          </Link>
-                          {canManage && (
-                            <button
-                              type="button"
-                              onClick={() => handleDelete(duty)}
-                              className="rounded-lg border border-red-200 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-red-900/60 dark:text-red-400 dark:hover:bg-red-950/40 transition-colors"
-                            >
-                              Hapus
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+        {renderDutiesContent()}
       </div>
 
       {/* Modal Tambah Jadwal */}

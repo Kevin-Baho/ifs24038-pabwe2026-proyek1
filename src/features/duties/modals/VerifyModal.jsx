@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import { asyncVerifyDuty } from '../states/action';
 import { showError } from '../../../helpers/toolsHelper';
 import Modal from '../../../components/common/Modal';
@@ -37,11 +38,13 @@ export default function VerifyModal({
     }
 
     setIsSubmitting(true);
-    const success = await dispatch(
-      asyncVerifyDuty(dutyId, {
-        status,
-        note: note.trim(),
-      })
+    const success = await Promise.resolve(
+      dispatch(
+        asyncVerifyDuty(dutyId, {
+          status,
+          note: note.trim(),
+        })
+      )
     );
     setIsSubmitting(false);
 
@@ -62,11 +65,12 @@ export default function VerifyModal({
     <Modal isOpen={isOpen} onClose={handleClose} title="Verifikasi Pelaksanaan Piket">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+          <p className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             Keputusan Verifikasi
-          </label>
+          </p>
           <div className="grid grid-cols-2 gap-3">
             <label
+              htmlFor="status_approved"
               className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl border p-3 text-sm font-medium transition-all ${
                 status === 'approved'
                   ? 'border-green-600 bg-green-50 text-green-700 font-bold dark:border-green-600 dark:bg-green-950/40 dark:text-green-300 shadow-2xs'
@@ -74,6 +78,7 @@ export default function VerifyModal({
               }`}
             >
               <input
+                id="status_approved"
                 type="radio"
                 name="status"
                 value="approved"
@@ -81,10 +86,11 @@ export default function VerifyModal({
                 onChange={() => setStatus('approved')}
                 className="sr-only"
               />
-              ✓ Setujui (Approve)
+              <span>✓ Setujui (Approve)</span>
             </label>
 
             <label
+              htmlFor="status_rejected"
               className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl border p-3 text-sm font-medium transition-all ${
                 status === 'rejected'
                   ? 'border-red-600 bg-red-50 text-red-700 font-bold dark:border-red-600 dark:bg-red-950/40 dark:text-red-300 shadow-2xs'
@@ -92,6 +98,7 @@ export default function VerifyModal({
               }`}
             >
               <input
+                id="status_rejected"
                 type="radio"
                 name="status"
                 value="rejected"
@@ -99,7 +106,7 @@ export default function VerifyModal({
                 onChange={() => setStatus('rejected')}
                 className="sr-only"
               />
-              ✕ Tolak (Reject)
+              <span>✕ Tolak (Reject)</span>
             </label>
           </div>
         </div>
@@ -139,3 +146,12 @@ export default function VerifyModal({
     </Modal>
   );
 }
+
+VerifyModal.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  dutyId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  initialStatus: PropTypes.string,
+  onSuccess: PropTypes.func,
+};
+

@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import { asyncUploadProof } from '../states/action';
 import { showError } from '../../../helpers/toolsHelper';
 import Modal from '../../../components/common/Modal';
 import Button from '../../../components/common/Button';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
 export default function UploadProofModal({ isOpen, onClose, dutyId, onSuccess }) {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ export default function UploadProofModal({ isOpen, onClose, dutyId, onSuccess })
     const selected = e.target.files?.[0];
     if (!selected) return;
 
-    if (!ALLOWED_TYPES.includes(selected.type)) {
+    if (!ALLOWED_TYPES.has(selected.type)) {
       showError('Format file harus berupa JPG, PNG, atau WEBP');
       e.target.value = '';
       return;
@@ -64,7 +65,7 @@ export default function UploadProofModal({ isOpen, onClose, dutyId, onSuccess })
     }
 
     setIsSubmitting(true);
-    const success = await dispatch(asyncUploadProof(dutyId, file, note));
+    const success = await Promise.resolve(dispatch(asyncUploadProof(dutyId, file, note)));
     setIsSubmitting(false);
 
     if (success) {
@@ -127,3 +128,11 @@ export default function UploadProofModal({ isOpen, onClose, dutyId, onSuccess })
     </Modal>
   );
 }
+
+UploadProofModal.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  dutyId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onSuccess: PropTypes.func,
+};
+

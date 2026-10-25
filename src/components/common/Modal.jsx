@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Komponen modal dialog yang dapat digunakan kembali.
@@ -25,8 +26,8 @@ export default function Modal({
       if (e.key === 'Escape') onClose?.();
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    globalThis.addEventListener('keydown', handleKeyDown);
+    return () => globalThis.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -38,10 +39,17 @@ export default function Modal({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose?.();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
     >
+      <button
+        type="button"
+        aria-label="Tutup"
+        onClick={onClose}
+        tabIndex={-1}
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs cursor-default"
+      />
       <div
-        className={`rounded-2xl bg-white p-6 shadow-2xl transition-all dark:bg-slate-900 dark:border dark:border-slate-800 max-h-[90vh] overflow-y-auto ${className}`}
+        className={`relative z-10 rounded-2xl bg-white p-6 shadow-2xl transition-all dark:bg-slate-900 dark:border dark:border-slate-800 max-h-[90vh] overflow-y-auto ${className}`}
       >
         {title && (
           <div className="mb-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
@@ -68,4 +76,14 @@ export default function Modal({
     </div>
   );
 }
+
+Modal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.node,
+  children: PropTypes.node,
+  footer: PropTypes.node,
+  className: PropTypes.string,
+};
+
 

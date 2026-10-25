@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { assetUrl } from '../../../helpers/apiHelper';
 
 export default function Avatar({ user, size = 'h-10 w-10' }) {
@@ -14,3 +15,12 @@ export default function Avatar({ user, size = 'h-10 w-10' }) {
     </div>
   );
 }
+
+Avatar.propTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    avatar_url: PropTypes.string,
+  }),
+  size: PropTypes.string,
+};
+
